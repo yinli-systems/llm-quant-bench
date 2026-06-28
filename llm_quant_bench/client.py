@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import json
+import ipaddress
 import time
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass
 from typing import Any
@@ -55,6 +57,7 @@ class OpenAIChatClient:
 
     def __init__(self, config: ModelConfig):
         self.config = config
+        self._opener = _build_opener(config.base_url)
 
     def generate(self, prompt: str, *, stream: bool) -> GenerationResult:
         started = time.perf_counter()
@@ -105,7 +108,7 @@ class OpenAIChatClient:
     ) -> GenerationResult:
         req = self._request(body)
         try:
-            with urllib.request.urlopen(req, timeout=self.config.timeout_s) as resp:
+            with self._opener.open(req, timeout=self.config.timeout_s) as resp:
                 payload = json.loads(resp.read().decode("utf-8"))
         except urllib.error.HTTPError as exc:
             detail = exc.read().decode("utf-8", errors="replace")
@@ -146,7 +149,7 @@ class OpenAIChatClient:
         usage: dict[str, Any] | None = None
 
         try:
-            with urllib.request.urlopen(req, timeout=self.config.timeout_s) as resp:
+            with self._opener.open(req, timeout=self.config.timeout_s) as resp:
                 for raw_line in resp:
                     line = raw_line.decode("utf-8", errors="replace").strip()
                     if not line or not line.startswith("data:"):
@@ -216,3 +219,21 @@ def _safe_int(value: Any) -> int | None:
         return int(value)
     except (TypeError, ValueError):
         return None
+
+
+def _build_opener(base_url: str) -> urllib.request.OpenerDirector:
+    if _is_loopback_url(base_url):
+        return urllib.request.build_opener(urllib.request.ProxyHandler({}))
+    return urllib.request.build_opener()
+
+
+def _is_loopback_url(url: str) -> bool:
+    host = urllib.parse.urlsplit(url).hostname
+    if host is None:
+        return False
+    if host.lower() == "localhost":
+        return True
+    try:
+        return ipaddress.ip_address(host).is_loopback
+    except ValueError:
+        return False

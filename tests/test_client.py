@@ -3,7 +3,7 @@ import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from llm_quant_bench.client import ModelConfig, OpenAIChatClient
+from llm_quant_bench.client import ModelConfig, OpenAIChatClient, _is_loopback_url
 
 
 class OpenAIMockHandler(BaseHTTPRequestHandler):
@@ -96,6 +96,12 @@ class ClientTest(unittest.TestCase):
         self.assertEqual(result.text, "hello world")
         self.assertEqual(result.prompt_tokens, 3)
         self.assertEqual(result.output_tokens, 2)
+
+    def test_loopback_detection_for_proxy_bypass(self):
+        self.assertTrue(_is_loopback_url("http://127.0.0.1:8000/v1"))
+        self.assertTrue(_is_loopback_url("http://localhost:8000/v1"))
+        self.assertTrue(_is_loopback_url("http://[::1]:8000/v1"))
+        self.assertFalse(_is_loopback_url("https://api.openai.example/v1"))
 
 
 if __name__ == "__main__":
