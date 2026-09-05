@@ -109,31 +109,26 @@ The first AWQ candidate quality pass completed on the same L20 setup. See [docs/
 | LongBench subset | 8192 | 60 | 60 | 0 | 0.2038 | 16.03s | Lightweight max token-F1, not an official leaderboard score. |
 | LongBench official-style metrics | 8192 | 60 | 60 | 0 | 16.16% | n/a | LongBench v1 task-metric mapping over the same generated samples. |
 
-These are absolute AWQ candidate results. They are not BF16/FP16-vs-AWQ quality-retention results.
+These rows are the earlier single-L20 absolute AWQ snapshot. A newer matched
+BF16-versus-AWQ run is recorded separately below.
 
 ## Quality Retention Status
 
-The current quality run should be interpreted as an AWQ candidate evaluation, not
-as a completed baseline-vs-quantized retention claim. A true retention result
-requires the same benchmark prompts, prompt templates, decoding settings, scorer,
-and answer extraction to be run against a matched FP16/BF16 reference endpoint.
+The missing matched baseline was completed on ParaCloud. Both arms used the same
+26,943-item frozen bundle, prompt construction, parser, temperature, and model
+family revision line, with zero failed requests. Full evidence and checksums are
+in [results/qwen25-72b-retention-v1/EVIDENCE.md](results/qwen25-72b-retention-v1/EVIDENCE.md).
 
-The single L20 used in this experiment cannot host the Qwen2.5-72B FP16/BF16
-checkpoint locally. Therefore, baseline-vs-AWQ quality retention is pending until
-one of the following is available:
+| Benchmark | BF16 | AWQ | AWQ - BF16 | Retention |
+|---|---:|---:|---:|---:|
+| MMLU | 0.817262 | 0.812776 | -0.449 pp | 99.451% |
+| CMMLU | 0.835521 | 0.830168 | -0.535 pp | 99.359% |
+| GSM8K | 0.807430 | 0.792267 | -1.516 pp | 98.122% |
 
-- a multi-GPU FP16/BF16 Qwen2.5-72B-Instruct endpoint;
-- a trusted hosted Qwen2.5-72B-Instruct endpoint with compatible decoding
-  controls; or
-- a previously captured FP16/BF16 result set generated with the same runner and
-  dataset version.
-
-Until then, the supported claim is:
-
-```text
-Qwen2.5-72B-Instruct-AWQ on one L20 is operationally stable and retains strong
-absolute benchmark performance under the tested prompts.
-```
+This supports a scoped quality-retention claim for the exact frozen benchmark
+bundle. It does not support a latency, throughput, or cost comparison because
+BF16 used eight RTX 4090 GPUs with TP=2/PP=4 and AWQ used two RTX 4090 GPUs with
+TP=2.
 
 The unsupported claim is:
 
@@ -141,7 +136,8 @@ The unsupported claim is:
 Qwen2.5-72B-Instruct-AWQ is lossless versus BF16/FP16.
 ```
 
-The repo now includes executable scaffolding for the missing research pieces:
+The repo includes the executed retention path and scaffolding for the remaining
+research pieces:
 
 | Gap | Script / Manifest | Output |
 |---|---|---|
@@ -154,12 +150,10 @@ The repo now includes executable scaffolding for the missing research pieces:
 | Multi-run confidence intervals | `scripts/run_repeated_load.py`, `scripts/summarize_repeats_ci.py` | repeated run summaries with mean/stddev/95% CI |
 | Full matrix readiness | `scripts/check_experiment_readiness.py`, `examples/full_research_matrix.example.json` | explicit ready/blocked table before launching expensive jobs |
 
-Current BF16 baseline and MT-Bench judge status: blocked. The latest preflight
-found no `BASELINE_BASE_URL`, `BASELINE_MODEL`, `JUDGE_BASE_URL`, `JUDGE_MODEL`,
-or `JUDGE_API_KEY`, and the remote L20 host currently has only AWQ checkpoint
-directories under `/home/USER/models`. A local 72B BF16/FP16 baseline is not
-feasible on one L20 because the weights alone require roughly 144GB before KV
-cache and runtime overhead.
+Current status: the BF16 baseline is complete on the documented eight-GPU
+ParaCloud topology. MT-Bench judging remains blocked on a configured external
+judge. A local 72B BF16/FP16 baseline remains infeasible on one L20 because the
+weights alone require roughly 144GB before KV cache and runtime overhead.
 
 Example baseline retention run, once a real BF16/FP16 endpoint exists:
 
@@ -335,6 +329,26 @@ python3 -m llm_quant_bench load \
 ```
 
 If the endpoint supports OpenAI streaming usage events, add `--stream-usage` to collect prompt token totals during load tests.
+
+To measure SLO-constrained goodput instead of treating every successful request
+as equally useful, set one or more per-request thresholds:
+
+```bash
+python3 -m llm_quant_bench load \
+  --config examples/config.example.json \
+  --dataset examples/golden_set.jsonl \
+  --out runs/l20-70b-q4-goodput-c16 \
+  --concurrency 16 \
+  --requests 256 \
+  --slo-ttft-ms 7000 \
+  --slo-tpot-ms 100 \
+  --slo-e2e-ms 25000
+```
+
+A request contributes to `request_goodput` and `output_token_goodput` only if
+it succeeds and every configured metric is present and within its SLO. Missing
+streaming TTFT/TPOT data therefore fails closed. Repeated-run confidence
+summaries include these goodput metrics when present.
 
 Outputs:
 

@@ -10,7 +10,6 @@ import statistics
 from pathlib import Path
 from typing import Any
 
-
 METRICS: dict[str, tuple[str, ...]] = {
     "success_rate": ("requests", "success_rate"),
     "request_throughput": ("requests", "request_throughput"),
@@ -19,6 +18,9 @@ METRICS: dict[str, tuple[str, ...]] = {
     "p95_ttft_s": ("ttft", "p95_s"),
     "p95_itl_s": ("inter_token_latency", "p95_s"),
     "p95_tpot_s": ("time_per_output_token", "p95_s"),
+    "goodput_compliance_rate": ("goodput", "compliance_rate"),
+    "request_goodput": ("goodput", "request_goodput"),
+    "output_token_goodput": ("goodput", "output_token_goodput"),
 }
 
 

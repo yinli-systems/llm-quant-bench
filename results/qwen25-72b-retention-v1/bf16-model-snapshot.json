@@ -1,0 +1,199 @@
+{
+  "name": "qwen25-72b-bf16",
+  "repo": "Qwen/Qwen2.5-72B-Instruct",
+  "revision": "495f39366efef23836d0cfae4fbe635880d2be31",
+  "local_dir": "/ssd/scxi253/gpu-evidence-20260905/models/qwen25-72b-bf16",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 1519
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 6962
+    },
+    {
+      "path": "README.md",
+      "bytes": 6259
+    },
+    {
+      "path": "config.json",
+      "bytes": 663
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 242
+    },
+    {
+      "path": "merges.txt",
+      "bytes": 1671839
+    },
+    {
+      "path": "model-00001-of-00037.safetensors",
+      "bytes": 3762345336
+    },
+    {
+      "path": "model-00002-of-00037.safetensors",
+      "bytes": 3995200440
+    },
+    {
+      "path": "model-00003-of-00037.safetensors",
+      "bytes": 3812769392
+    },
+    {
+      "path": "model-00004-of-00037.safetensors",
+      "bytes": 3995183944
+    },
+    {
+      "path": "model-00005-of-00037.safetensors",
+      "bytes": 3995183944
+    },
+    {
+      "path": "model-00006-of-00037.safetensors",
+      "bytes": 3995200456
+    },
+    {
+      "path": "model-00007-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00008-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00009-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00010-of-00037.safetensors",
+      "bytes": 3995200464
+    },
+    {
+      "path": "model-00011-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00012-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00013-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00014-of-00037.safetensors",
+      "bytes": 3995200464
+    },
+    {
+      "path": "model-00015-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00016-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00017-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00018-of-00037.safetensors",
+      "bytes": 3995200464
+    },
+    {
+      "path": "model-00019-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00020-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00021-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00022-of-00037.safetensors",
+      "bytes": 3995200464
+    },
+    {
+      "path": "model-00023-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00024-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00025-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00026-of-00037.safetensors",
+      "bytes": 3995200464
+    },
+    {
+      "path": "model-00027-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00028-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00029-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00030-of-00037.safetensors",
+      "bytes": 3995200464
+    },
+    {
+      "path": "model-00031-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00032-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00033-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00034-of-00037.safetensors",
+      "bytes": 3995200464
+    },
+    {
+      "path": "model-00035-of-00037.safetensors",
+      "bytes": 3812769424
+    },
+    {
+      "path": "model-00036-of-00037.safetensors",
+      "bytes": 3995183968
+    },
+    {
+      "path": "model-00037-of-00037.safetensors",
+      "bytes": 3460317640
+    },
+    {
+      "path": "model.safetensors.index.json",
+      "bytes": 79025
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 7031645
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 7305
+    },
+    {
+      "path": "vocab.json",
+      "bytes": 2776833
+    }
+  ],
+  "file_count": 47,
+  "total_bytes": 145424101604,
+  "tree_sha256": "69e8ec2315916e33e06fa481a75bcfabc6f7686002d7c08b13516d48b5350798"
+}

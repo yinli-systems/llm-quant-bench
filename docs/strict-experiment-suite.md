@@ -1,5 +1,9 @@
 # Strict Experiment Suite
 
+> Historical readiness snapshot: the BF16 endpoint listed as blocked below was
+> later supplied by an eight-GPU ParaCloud run. See
+> [the completed retention evidence](../results/qwen25-72b-retention-v1/EVIDENCE.md).
+
 This document tracks the evidence still needed before making stronger research
 claims about single-L20 70B serving.
 

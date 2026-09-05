@@ -50,6 +50,9 @@ class GenerationResult:
     tokens_per_second: float | None
     error: str | None = None
     raw_usage: dict[str, Any] | None = None
+    inter_chunk_latency_s: float | None = None
+    stream_completed: bool | None = None
+    token_count_source: str | None = None
 
 
 class OpenAIChatClient:
@@ -124,6 +127,7 @@ class OpenAIChatClient:
         completion_tokens = usage.get("completion_tokens")
         prompt_tokens = usage.get("prompt_tokens")
         output_tokens = _safe_int(completion_tokens) or estimate_tokens(text)
+        token_count_source = "api_usage" if _safe_int(completion_tokens) is not None else "estimated"
         tps = output_tokens / latency_s if latency_s > 0 and output_tokens else None
         tpot = latency_s / output_tokens if output_tokens else None
         return GenerationResult(
@@ -137,6 +141,8 @@ class OpenAIChatClient:
             prompt_tokens=_safe_int(prompt_tokens),
             tokens_per_second=tps,
             raw_usage=usage,
+            stream_completed=None,
+            token_count_source=token_count_source,
         )
 
     def _generate_streaming(
@@ -147,20 +153,21 @@ class OpenAIChatClient:
         ttft_s: float | None = None
         chunk_times: list[float] = []
         usage: dict[str, Any] | None = None
+        saw_done = False
 
         try:
             with self._opener.open(req, timeout=self.config.timeout_s) as resp:
-                for raw_line in resp:
-                    line = raw_line.decode("utf-8", errors="replace").strip()
-                    if not line or not line.startswith("data:"):
-                        continue
-                    data = line.removeprefix("data:").strip()
+                content_type = resp.headers.get_content_type()
+                if content_type != "text/event-stream":
+                    raise RuntimeError(f"expected text/event-stream, got {content_type}")
+                for data in _iter_sse_data(resp):
                     if data == "[DONE]":
+                        saw_done = True
                         break
                     try:
                         event = json.loads(data)
-                    except json.JSONDecodeError:
-                        continue
+                    except json.JSONDecodeError as exc:
+                        raise RuntimeError(f"invalid SSE JSON event: {exc.msg}") from exc
                     if event.get("usage"):
                         usage = event["usage"]
                     for choice in event.get("choices", []):
@@ -178,29 +185,73 @@ class OpenAIChatClient:
         latency_s = time.perf_counter() - started
         text = "".join(chunks)
         usage = usage or {}
-        completion_tokens = _safe_int(usage.get("completion_tokens")) or estimate_tokens(text)
+        exact_completion_tokens = _safe_int(usage.get("completion_tokens"))
+        completion_tokens = exact_completion_tokens or estimate_tokens(text)
         prompt_tokens = _safe_int(usage.get("prompt_tokens"))
-        decode_s = max(latency_s - (ttft_s or 0.0), 1e-9)
-        tps = completion_tokens / decode_s if completion_tokens else None
-        tpot = decode_s / completion_tokens if completion_tokens else None
+        decode_s = chunk_times[-1] - chunk_times[0] if len(chunk_times) > 1 else None
+        # SSE content chunks are not tokenizer tokens.  Only report token-level
+        # decode metrics when the server supplied an exact completion count.
+        token_intervals = exact_completion_tokens - 1 if exact_completion_tokens else 0
+        tps = token_intervals / decode_s if decode_s and token_intervals > 0 else None
+        tpot = decode_s / token_intervals if decode_s and token_intervals > 0 else None
         if len(chunk_times) > 1:
-            inter_token_latency_s = (chunk_times[-1] - chunk_times[0]) / (
+            inter_chunk_latency_s = (chunk_times[-1] - chunk_times[0]) / (
                 len(chunk_times) - 1
             )
         else:
-            inter_token_latency_s = tpot
+            inter_chunk_latency_s = None
+        if not saw_done:
+            return GenerationResult(
+                ok=False,
+                text=text,
+                latency_s=latency_s,
+                ttft_s=ttft_s,
+                inter_token_latency_s=None,
+                time_per_output_token_s=None,
+                output_tokens=completion_tokens,
+                prompt_tokens=prompt_tokens,
+                tokens_per_second=None,
+                error="incomplete_sse_stream: missing [DONE]",
+                raw_usage=usage,
+                inter_chunk_latency_s=inter_chunk_latency_s,
+                stream_completed=False,
+                token_count_source=("api_usage" if exact_completion_tokens is not None else "estimated"),
+            )
         return GenerationResult(
             ok=True,
             text=text,
             latency_s=latency_s,
             ttft_s=ttft_s,
-            inter_token_latency_s=inter_token_latency_s,
+            inter_token_latency_s=tpot,
             time_per_output_token_s=tpot,
             output_tokens=completion_tokens,
             prompt_tokens=prompt_tokens,
             tokens_per_second=tps,
             raw_usage=usage,
+            inter_chunk_latency_s=inter_chunk_latency_s,
+            stream_completed=True,
+            token_count_source=("api_usage" if exact_completion_tokens is not None else "estimated"),
         )
+
+
+def _iter_sse_data(response):
+    """Yield complete SSE data payloads, including multi-line data events."""
+
+    data_lines: list[str] = []
+    for raw_line in response:
+        line = raw_line.decode("utf-8", errors="strict").rstrip("\r\n")
+        if not line:
+            if data_lines:
+                yield "\n".join(data_lines)
+                data_lines.clear()
+            continue
+        if line.startswith(":"):
+            continue
+        field, separator, value = line.partition(":")
+        if separator and field == "data":
+            data_lines.append(value[1:] if value.startswith(" ") else value)
+    if data_lines:
+        yield "\n".join(data_lines)
 
 
 def estimate_tokens(text: str) -> int:

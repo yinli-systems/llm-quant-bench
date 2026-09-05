@@ -3,7 +3,6 @@ import importlib.util
 import pathlib
 import unittest
 
-
 SCRIPT_PATH = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "run_quality_retention.py"
 SPEC = importlib.util.spec_from_file_location("run_quality_retention", SCRIPT_PATH)
 wrapper = importlib.util.module_from_spec(SPEC)

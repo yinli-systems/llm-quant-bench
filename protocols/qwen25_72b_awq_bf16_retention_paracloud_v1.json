@@ -1,0 +1,51 @@
+{
+  "protocol_version": "qwen25-72b-retention-v1",
+  "base_model": "Qwen/Qwen2.5-72B-Instruct",
+  "baseline": {
+    "precision": "BF16",
+    "tensor_parallel_size": 2,
+    "pipeline_parallel_size": 4,
+    "nodes": 4,
+    "gpus_per_node": 2,
+    "gpu": "8 x RTX 4090 24GB"
+  },
+  "candidate": {
+    "model": "Qwen/Qwen2.5-72B-Instruct-AWQ",
+    "precision": "AWQ",
+    "tensor_parallel_size": 2,
+    "pipeline_parallel_size": 1,
+    "nodes": 1,
+    "gpus_per_node": 2,
+    "gpu": "2 x RTX 4090 24GB"
+  },
+  "benchmarks": ["MMLU test", "CMMLU test", "GSM8K test"],
+  "sample_scope": "full benchmark splits",
+  "prompt_contract": {
+    "source": "scripts/run_quality_eval.py",
+    "temperature": 0.0,
+    "frozen_item_bundle_required": true,
+    "frozen_item_sha256_must_match": true,
+    "candidate_and_baseline_parser_identical": true
+  },
+  "serving": {
+    "runtime": "vLLM OpenAI-compatible server",
+    "max_model_len": 4096,
+    "evaluation_concurrency": 8
+  },
+  "validity_gates": [
+    "exact same benchmark/task/item identities",
+    "zero failed requests in both arms",
+    "same frozen item SHA-256 in both summaries",
+    "paired per-item delta and disagreement counts",
+    "record allocated GPU inventory and model snapshot hashes",
+    "scan server and evaluation logs for OOM, traceback, killed process, and errors"
+  ],
+  "primary_outputs": [
+    "baseline/summary.json",
+    "candidate/summary.json",
+    "quality_retention.json",
+    "baseline/samples.jsonl",
+    "candidate/samples.jsonl"
+  ],
+  "claim_boundary": "Quality retention is matched by model family, frozen items, prompts, and parser. Latency, throughput, and cost are not like-for-like because BF16 and AWQ use different GPU counts and parallel topologies."
+}

@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import argparse
 import csv
+import hashlib
 import json
 import math
 import os
@@ -20,18 +21,17 @@ import statistics
 import string
 import sys
 import time
+from collections.abc import Iterable
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
-
+from typing import Any
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 
-from llm_quant_bench.client import ModelConfig, OpenAIChatClient  # noqa: E402
-
+from llm_quant_bench.client import ModelConfig, OpenAIChatClient
 
 CHOICE_RE = re.compile(
     r"(?:^|\b)(?:answer|答案|选项|option)?\s*(?:is|是|:|：)?\s*[\(\[]?\s*([ABCD])\s*[\)\].,，。]?",
@@ -49,6 +49,53 @@ class EvalItem:
     expected: Any
     metric: str
     max_tokens: int
+
+
+def item_payload(item: EvalItem) -> dict[str, Any]:
+    return {
+        "schema": "llm-quant-bench-eval-item-v1",
+        "benchmark": item.benchmark,
+        "task": item.task,
+        "item_id": item.item_id,
+        "prompt": item.prompt,
+        "expected": item.expected,
+        "metric": item.metric,
+        "max_tokens": item.max_tokens,
+    }
+
+
+def serialize_items(items: list[EvalItem]) -> bytes:
+    lines = [
+        json.dumps(item_payload(item), ensure_ascii=False, sort_keys=True, separators=(",", ":"))
+        for item in items
+    ]
+    return (("\n".join(lines) + "\n") if lines else "").encode("utf-8")
+
+
+def load_items_file(path: Path) -> list[EvalItem]:
+    items: list[EvalItem] = []
+    with path.open(encoding="utf-8") as handle:
+        for line_number, line in enumerate(handle, start=1):
+            if not line.strip():
+                continue
+            payload = json.loads(line)
+            if payload.get("schema") != "llm-quant-bench-eval-item-v1":
+                raise ValueError(f"Unsupported item schema at {path}:{line_number}")
+            items.append(
+                EvalItem(
+                    benchmark=str(payload["benchmark"]),
+                    task=str(payload["task"]),
+                    item_id=str(payload["item_id"]),
+                    prompt=str(payload["prompt"]),
+                    expected=payload.get("expected"),
+                    metric=str(payload["metric"]),
+                    max_tokens=int(payload["max_tokens"]),
+                )
+            )
+    identities = [(item.benchmark, item.task, item.item_id) for item in items]
+    if len(identities) != len(set(identities)):
+        raise ValueError(f"Duplicate benchmark/task/item_id entries in {path}")
+    return items
 
 
 def parse_args() -> argparse.Namespace:
@@ -74,6 +121,21 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--gsm8k-max-tokens", type=int, default=256)
     parser.add_argument("--longbench-max-tokens", type=int, default=128)
     parser.add_argument("--sample-log-every", type=int, default=100)
+    parser.add_argument(
+        "--items-file",
+        default=None,
+        help="Read an exact, previously frozen EvalItem JSONL bundle instead of loading datasets.",
+    )
+    parser.add_argument(
+        "--write-items-file",
+        default=None,
+        help="Write the exact post-filter EvalItem JSONL bundle used by this run.",
+    )
+    parser.add_argument(
+        "--prepare-only",
+        action="store_true",
+        help="Build and hash the item bundle without calling a model endpoint.",
+    )
     return parser.parse_args()
 
 
@@ -82,21 +144,26 @@ def main() -> None:
     out_dir = Path(args.out)
     out_dir.mkdir(parents=True, exist_ok=True)
 
-    items: list[EvalItem] = []
-    for benchmark in args.benchmarks:
-        name = benchmark.lower()
-        if name == "mmlu":
-            items.extend(load_mmlu(args))
-        elif name == "cmmlu":
-            items.extend(load_cmmlu(args))
-        elif name == "gsm8k":
-            items.extend(load_gsm8k(args))
-        elif name == "longbench":
-            items.extend(load_longbench(args))
-        elif name in {"mt-bench", "mtbench"}:
-            items.extend(load_mt_bench(args))
-        else:
-            raise SystemExit(f"Unsupported benchmark: {benchmark}")
+    if args.items_file:
+        items = load_items_file(Path(args.items_file))
+        requested = {name.lower() for name in args.benchmarks}
+        items = [item for item in items if item.benchmark.lower() in requested]
+    else:
+        items = []
+        for benchmark in args.benchmarks:
+            name = benchmark.lower()
+            if name == "mmlu":
+                items.extend(load_mmlu(args))
+            elif name == "cmmlu":
+                items.extend(load_cmmlu(args))
+            elif name == "gsm8k":
+                items.extend(load_gsm8k(args))
+            elif name == "longbench":
+                items.extend(load_longbench(args))
+            elif name in {"mt-bench", "mtbench"}:
+                items.extend(load_mt_bench(args))
+            else:
+                raise SystemExit(f"Unsupported benchmark: {benchmark}")
 
     if args.max_per_task is not None:
         items = cap_per_key(items, "task", args.max_per_task)
@@ -111,16 +178,36 @@ def main() -> None:
                 seen[item.benchmark] = count + 1
         items = limited
 
+    item_bytes = serialize_items(items)
+    items_sha256 = hashlib.sha256(item_bytes).hexdigest()
+    if args.write_items_file:
+        frozen_path = Path(args.write_items_file)
+        frozen_path.parent.mkdir(parents=True, exist_ok=True)
+        frozen_path.write_bytes(item_bytes)
+    if args.prepare_only and not args.write_items_file:
+        raise SystemExit("--prepare-only requires --write-items-file")
+
     manifest = {
         "model": args.model,
         "base_url": args.base_url,
         "benchmarks": args.benchmarks,
         "concurrency": args.concurrency,
         "limit": args.limit,
+        "max_per_task": args.max_per_task,
+        "temperature": args.temperature,
         "created_at_unix": time.time(),
         "num_items": len(items),
+        "items_sha256": items_sha256,
+        "items_file": args.items_file,
+        "frozen_items_output": args.write_items_file,
+        "item_schema": "llm-quant-bench-eval-item-v1",
+        "prepare_only": args.prepare_only,
     }
     (out_dir / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
+
+    if args.prepare_only:
+        print(json.dumps(manifest, indent=2))
+        return
 
     config = ModelConfig(
         name="candidate",
@@ -136,18 +223,21 @@ def main() -> None:
     started = time.perf_counter()
     results: list[dict[str, Any]] = []
     samples_path = out_dir / "samples.jsonl"
-    with samples_path.open("w", encoding="utf-8") as handle:
-        with ThreadPoolExecutor(max_workers=args.concurrency) as pool:
-            futures = [pool.submit(run_one, item, config) for item in items]
-            for idx, future in enumerate(as_completed(futures), start=1):
-                row = future.result()
-                results.append(row)
-                handle.write(json.dumps(row, ensure_ascii=False) + "\n")
-                handle.flush()
-                if args.sample_log_every and idx % args.sample_log_every == 0:
-                    print(f"completed {idx}/{len(items)}", flush=True)
+    with (
+        samples_path.open("w", encoding="utf-8") as handle,
+        ThreadPoolExecutor(max_workers=args.concurrency) as pool,
+    ):
+        futures = [pool.submit(run_one, item, config) for item in items]
+        for idx, future in enumerate(as_completed(futures), start=1):
+            row = future.result()
+            results.append(row)
+            handle.write(json.dumps(row, ensure_ascii=False) + "\n")
+            handle.flush()
+            if args.sample_log_every and idx % args.sample_log_every == 0:
+                print(f"completed {idx}/{len(items)}", flush=True)
 
     summary = summarize(results, time.perf_counter() - started)
+    summary["items_sha256"] = items_sha256
     (out_dir / "summary.json").write_text(json.dumps(summary, indent=2, ensure_ascii=False), encoding="utf-8")
     (out_dir / "report.md").write_text(render_report(summary), encoding="utf-8")
     print(json.dumps(summary, indent=2, ensure_ascii=False))

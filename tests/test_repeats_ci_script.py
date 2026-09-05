@@ -3,7 +3,6 @@ import pathlib
 import sys
 import unittest
 
-
 SCRIPT_PATH = pathlib.Path(__file__).resolve().parents[1] / "scripts" / "summarize_repeats_ci.py"
 SPEC = importlib.util.spec_from_file_location("summarize_repeats_ci", SCRIPT_PATH)
 ci = importlib.util.module_from_spec(SPEC)
@@ -26,16 +25,20 @@ class RepeatsCITest(unittest.TestCase):
                     "concurrency": 1,
                     "requests": {"success_rate": 1.0},
                     "tokens": {"output_token_throughput": 10.0},
+                    "goodput": {"request_goodput": 2.0},
                 },
                 {
                     "concurrency": 1,
                     "requests": {"success_rate": 1.0},
                     "tokens": {"output_token_throughput": 12.0},
+                    "goodput": {"request_goodput": 4.0},
                 },
             ]
         )
         metric = summary["groups"]["1"]["metrics"]["output_token_throughput"]
         self.assertAlmostEqual(metric["mean"], 11.0)
+        goodput = summary["groups"]["1"]["metrics"]["request_goodput"]
+        self.assertAlmostEqual(goodput["mean"], 3.0)
 
 
 if __name__ == "__main__":

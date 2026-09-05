@@ -1,5 +1,9 @@
 # L20 Qwen2.5-72B AWQ Quality Evaluation Notes
 
+> Historical snapshot: this document records the earlier AWQ-only L20 run.
+> The subsequently completed matched BF16-versus-AWQ result is available in
+> [the ParaCloud evidence bundle](../results/qwen25-72b-retention-v1/EVIDENCE.md).
+
 This note records the first quality-evaluation pass for `Qwen/Qwen2.5-72B-Instruct-AWQ` served by vLLM on a single NVIDIA L20.
 
 ## Scope

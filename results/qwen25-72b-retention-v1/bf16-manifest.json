@@ -1,0 +1,20 @@
+{
+  "model": "qwen25-72b-bf16",
+  "base_url": "http://127.0.0.1:8001/v1",
+  "benchmarks": [
+    "mmlu",
+    "cmmlu",
+    "gsm8k"
+  ],
+  "concurrency": 8,
+  "limit": null,
+  "max_per_task": null,
+  "temperature": 0.0,
+  "created_at_unix": 1788637889.290219,
+  "num_items": 26943,
+  "items_sha256": "9b65268478b32ad8d077c40f4d914f421055f521ce2eefd832048e2b10ce618b",
+  "items_file": "/ssd/scxi253/gpu-evidence-20260905/data/qwen25-72b-quality-items-v1.jsonl",
+  "frozen_items_output": null,
+  "item_schema": "llm-quant-bench-eval-item-v1",
+  "prepare_only": false
+}

@@ -1,7 +1,8 @@
 import importlib.util
+import json
 import pathlib
+import tempfile
 import unittest
-
 
 SCRIPT_PATH = (
     pathlib.Path(__file__).resolve().parents[1]
@@ -21,6 +22,24 @@ class QualityRetentionScriptTest(unittest.TestCase):
     def test_missing_or_zero_baseline_returns_none(self):
         self.assertIsNone(retention.compute_retention(0.78, 0.0))
         self.assertIsNone(retention.compute_retention(None, 0.8))
+
+    def test_paired_analysis_preserves_item_identity(self):
+        baseline = [
+            {"benchmark": "mmlu", "task": "x", "item_id": "1", "ok": True, "score": 1.0},
+            {"benchmark": "mmlu", "task": "x", "item_id": "2", "ok": True, "score": 0.0},
+        ]
+        candidate = [
+            {"benchmark": "mmlu", "task": "x", "item_id": "2", "ok": True, "score": 1.0},
+            {"benchmark": "mmlu", "task": "x", "item_id": "1", "ok": True, "score": 1.0},
+        ]
+        with tempfile.TemporaryDirectory() as temp_dir:
+            base_path = pathlib.Path(temp_dir) / "base.jsonl"
+            cand_path = pathlib.Path(temp_dir) / "cand.jsonl"
+            base_path.write_text("".join(json.dumps(row) + "\n" for row in baseline))
+            cand_path.write_text("".join(json.dumps(row) + "\n" for row in candidate))
+            result = retention.paired_analysis(base_path, cand_path)
+        self.assertEqual(result["mmlu"]["candidate_only_wins"], 1)
+        self.assertEqual(result["mmlu"]["paired_items"], 2)
 
 
 if __name__ == "__main__":

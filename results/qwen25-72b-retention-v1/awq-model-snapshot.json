@@ -1,0 +1,95 @@
+{
+  "name": "qwen25-72b-awq",
+  "repo": "Qwen/Qwen2.5-72B-Instruct-AWQ",
+  "revision": "698703eae6604af048a3d2f509995dc302088217",
+  "local_dir": "/ssd/scxi253/gpu-evidence-20260905/models/qwen25-72b-awq",
+  "files": [
+    {
+      "path": ".gitattributes",
+      "bytes": 1518
+    },
+    {
+      "path": "LICENSE",
+      "bytes": 6962
+    },
+    {
+      "path": "README.md",
+      "bytes": 6386
+    },
+    {
+      "path": "config.json",
+      "bytes": 841
+    },
+    {
+      "path": "generation_config.json",
+      "bytes": 243
+    },
+    {
+      "path": "merges.txt",
+      "bytes": 1671853
+    },
+    {
+      "path": "model-00001-of-00011.safetensors",
+      "bytes": 3942869352
+    },
+    {
+      "path": "model-00002-of-00011.safetensors",
+      "bytes": 3914063504
+    },
+    {
+      "path": "model-00003-of-00011.safetensors",
+      "bytes": 3992565472
+    },
+    {
+      "path": "model-00004-of-00011.safetensors",
+      "bytes": 3992565472
+    },
+    {
+      "path": "model-00005-of-00011.safetensors",
+      "bytes": 3914063680
+    },
+    {
+      "path": "model-00006-of-00011.safetensors",
+      "bytes": 3992565472
+    },
+    {
+      "path": "model-00007-of-00011.safetensors",
+      "bytes": 3992565472
+    },
+    {
+      "path": "model-00008-of-00011.safetensors",
+      "bytes": 3914063680
+    },
+    {
+      "path": "model-00009-of-00011.safetensors",
+      "bytes": 3992565472
+    },
+    {
+      "path": "model-00010-of-00011.safetensors",
+      "bytes": 3456451824
+    },
+    {
+      "path": "model-00011-of-00011.safetensors",
+      "bytes": 2491416704
+    },
+    {
+      "path": "model.safetensors.index.json",
+      "bytes": 178987
+    },
+    {
+      "path": "tokenizer.json",
+      "bytes": 7031645
+    },
+    {
+      "path": "tokenizer_config.json",
+      "bytes": 7305
+    },
+    {
+      "path": "vocab.json",
+      "bytes": 2776833
+    }
+  ],
+  "file_count": 21,
+  "total_bytes": 41607438677,
+  "tree_sha256": "625a09eb563471d32058d4af3766882b840753e4797df7c9c50ff42610fd11c2"
+}
