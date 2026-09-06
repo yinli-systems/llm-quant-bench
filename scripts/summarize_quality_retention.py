@@ -36,14 +36,18 @@ def main() -> None:
         )
     if set(baseline.get("by_benchmark", {})) != set(candidate.get("by_benchmark", {})):
         raise ValueError("Baseline and candidate benchmark coverage differs")
-    if not args.allow_failures and (baseline.get("failed_items") or candidate.get("failed_items")):
+    if not args.allow_failures and (
+        baseline.get("failed_items") or candidate.get("failed_items")
+    ):
         raise ValueError(
             "Quality retention requires zero failed requests unless --allow-failures is explicit"
         )
 
     paired = None
     if bool(args.baseline_samples) != bool(args.candidate_samples):
-        raise ValueError("Provide both --baseline-samples and --candidate-samples, or neither")
+        raise ValueError(
+            "Provide both --baseline-samples and --candidate-samples, or neither"
+        )
     if args.baseline_samples:
         paired = paired_analysis(
             Path(args.baseline_samples), Path(args.candidate_samples)
@@ -134,26 +138,37 @@ def load_samples(path: Path) -> dict[tuple[str, str, str], dict[str, Any]]:
 def paired_analysis(baseline_path: Path, candidate_path: Path) -> dict[str, Any]:
     baseline = load_samples(baseline_path)
     candidate = load_samples(candidate_path)
+    if not baseline or not candidate:
+        raise ValueError("Paired analysis requires nonempty sample files")
     if set(baseline) != set(candidate):
         missing = len(set(baseline) - set(candidate))
         extra = len(set(candidate) - set(baseline))
-        raise ValueError(f"Paired sample coverage mismatch: missing={missing}, extra={extra}")
+        raise ValueError(
+            f"Paired sample coverage mismatch: missing={missing}, extra={extra}"
+        )
 
     by_benchmark: dict[str, list[tuple[float, float]]] = {}
     for key in sorted(baseline):
         base_row = baseline[key]
         cand_row = candidate[key]
-        if not base_row.get("ok") or not cand_row.get("ok"):
+        if base_row.get("ok") is not True or cand_row.get("ok") is not True:
             raise ValueError(f"Paired analysis requires successful requests: {key}")
-        if base_row.get("score") is None or cand_row.get("score") is None:
-            continue
+        for row in (base_row, cand_row):
+            value = row.get("score")
+            if type(value) not in (int, float) or not math.isfinite(value):
+                raise ValueError(
+                    f"Paired analysis requires finite numeric scores: {key}"
+                )
         by_benchmark.setdefault(key[0], []).append(
             (float(base_row["score"]), float(cand_row["score"]))
         )
 
     result: dict[str, Any] = {}
     for benchmark, pairs in sorted(by_benchmark.items()):
-        differences = [candidate_score - baseline_score for baseline_score, candidate_score in pairs]
+        differences = [
+            candidate_score - baseline_score
+            for baseline_score, candidate_score in pairs
+        ]
         mean_difference = statistics.fmean(differences)
         standard_error = (
             statistics.stdev(differences) / math.sqrt(len(differences))
