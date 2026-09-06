@@ -1,0 +1,875 @@
+{
+  "elapsed_s": 3503.448845198378,
+  "total_items": 26943,
+  "ok_items": 26943,
+  "failed_items": 0,
+  "by_benchmark": {
+    "mmlu": {
+      "items": 14042,
+      "ok": 14042,
+      "failed": 0,
+      "scored_items": 14042,
+      "score_mean": 0.8127759578407634,
+      "latency_p50_s": 0.5090467948466539,
+      "latency_p95_s": 1.6372177954763174
+    },
+    "cmmlu": {
+      "items": 11582,
+      "ok": 11582,
+      "failed": 0,
+      "scored_items": 11582,
+      "score_mean": 0.8301675012951131,
+      "latency_p50_s": 0.4458893649280071,
+      "latency_p95_s": 0.751181535422802
+    },
+    "gsm8k": {
+      "items": 1319,
+      "ok": 1319,
+      "failed": 0,
+      "scored_items": 1319,
+      "score_mean": 0.7922668688400303,
+      "latency_p50_s": 9.816495835781097,
+      "latency_p95_s": 13.136808581650257
+    }
+  },
+  "by_task": {
+    "abstract_algebra": {
+      "items": 100,
+      "ok": 100,
+      "failed": 0,
+      "scored_items": 100,
+      "score_mean": 0.69,
+      "latency_p50_s": 0.4695776738226414,
+      "latency_p95_s": 0.7590223159641027
+    },
+    "anatomy": {
+      "items": 283,
+      "ok": 283,
+      "failed": 0,
+      "scored_items": 283,
+      "score_mean": 0.8551236749116607,
+      "latency_p50_s": 0.3955021183937788,
+      "latency_p95_s": 0.5097156893461943
+    },
+    "astronomy": {
+      "items": 317,
+      "ok": 317,
+      "failed": 0,
+      "scored_items": 317,
+      "score_mean": 0.7791798107255521,
+      "latency_p50_s": 0.49881935492157936,
+      "latency_p95_s": 0.6010840088129044
+    },
+    "business_ethics": {
+      "items": 309,
+      "ok": 309,
+      "failed": 0,
+      "scored_items": 309,
+      "score_mean": 0.7411003236245954,
+      "latency_p50_s": 0.4065512493252754,
+      "latency_p95_s": 0.5771890580654144
+    },
+    "clinical_knowledge": {
+      "items": 502,
+      "ok": 502,
+      "failed": 0,
+      "scored_items": 502,
+      "score_mean": 0.8565737051792829,
+      "latency_p50_s": 0.5270856972783804,
+      "latency_p95_s": 0.8126612156629562
+    },
+    "college_biology": {
+      "items": 144,
+      "ok": 144,
+      "failed": 0,
+      "scored_items": 144,
+      "score_mean": 0.9097222222222222,
+      "latency_p50_s": 0.5664922166615725,
+      "latency_p95_s": 0.6967639233916998
+    },
+    "college_chemistry": {
+      "items": 100,
+      "ok": 100,
+      "failed": 0,
+      "scored_items": 100,
+      "score_mean": 0.62,
+      "latency_p50_s": 0.5856883693486452,
+      "latency_p95_s": 0.743133082985878
+    },
+    "college_computer_science": {
+      "items": 100,
+      "ok": 100,
+      "failed": 0,
+      "scored_items": 100,
+      "score_mean": 0.78,
+      "latency_p50_s": 0.6611588671803474,
+      "latency_p95_s": 0.8771635945886374
+    },
+    "college_mathematics": {
+      "items": 205,
+      "ok": 205,
+      "failed": 0,
+      "scored_items": 205,
+      "score_mean": 0.5902439024390244,
+      "latency_p50_s": 0.7058260776102543,
+      "latency_p95_s": 1.1795855220407248
+    },
+    "college_medicine": {
+      "items": 446,
+      "ok": 446,
+      "failed": 0,
+      "scored_items": 446,
+      "score_mean": 0.8542600896860987,
+      "latency_p50_s": 0.4766338746994734,
+      "latency_p95_s": 0.7163581866770983
+    },
+    "college_physics": {
+      "items": 102,
+      "ok": 102,
+      "failed": 0,
+      "scored_items": 102,
+      "score_mean": 0.6470588235294118,
+      "latency_p50_s": 0.5190261006355286,
+      "latency_p95_s": 0.6245541665703058
+    },
+    "computer_security": {
+      "items": 271,
+      "ok": 271,
+      "failed": 0,
+      "scored_items": 271,
+      "score_mean": 0.9040590405904059,
+      "latency_p50_s": 0.48759316094219685,
+      "latency_p95_s": 0.6438328567892313
+    },
+    "conceptual_physics": {
+      "items": 382,
+      "ok": 382,
+      "failed": 0,
+      "scored_items": 382,
+      "score_mean": 0.887434554973822,
+      "latency_p50_s": 0.39141019992530346,
+      "latency_p95_s": 0.6475554555654526
+    },
+    "econometrics": {
+      "items": 114,
+      "ok": 114,
+      "failed": 0,
+      "scored_items": 114,
+      "score_mean": 0.7280701754385965,
+      "latency_p50_s": 0.6338900998234749,
+      "latency_p95_s": 0.7580201234668493
+    },
+    "electrical_engineering": {
+      "items": 317,
+      "ok": 317,
+      "failed": 0,
+      "scored_items": 317,
+      "score_mean": 0.8012618296529969,
+      "latency_p50_s": 0.43361711874604225,
+      "latency_p95_s": 0.5691522676497698
+    },
+    "elementary_mathematics": {
+      "items": 608,
+      "ok": 608,
+      "failed": 0,
+      "scored_items": 608,
+      "score_mean": 0.8174342105263158,
+      "latency_p50_s": 0.4999826233834028,
+      "latency_p95_s": 0.6030833385884762
+    },
+    "formal_logic": {
+      "items": 126,
+      "ok": 126,
+      "failed": 0,
+      "scored_items": 126,
+      "score_mean": 0.6825396825396826,
+      "latency_p50_s": 0.580930246040225,
+      "latency_p95_s": 0.7467484399676323
+    },
+    "global_facts": {
+      "items": 249,
+      "ok": 249,
+      "failed": 0,
+      "scored_items": 249,
+      "score_mean": 0.714859437751004,
+      "latency_p50_s": 0.4122737366706133,
+      "latency_p95_s": 0.5364684853702784
+    },
+    "high_school_biology": {
+      "items": 479,
+      "ok": 479,
+      "failed": 0,
+      "scored_items": 479,
+      "score_mean": 0.9102296450939458,
+      "latency_p50_s": 0.5980112571269274,
+      "latency_p95_s": 0.8384620361030102
+    },
+    "high_school_chemistry": {
+      "items": 335,
+      "ok": 335,
+      "failed": 0,
+      "scored_items": 335,
+      "score_mean": 0.7701492537313432,
+      "latency_p50_s": 0.6470356415957212,
+      "latency_p95_s": 0.8280212506651878
+    },
+    "high_school_computer_science": {
+      "items": 100,
+      "ok": 100,
+      "failed": 0,
+      "scored_items": 100,
+      "score_mean": 0.92,
+      "latency_p50_s": 0.7267962824553251,
+      "latency_p95_s": 0.8786712940782309
+    },
+    "high_school_european_history": {
+      "items": 165,
+      "ok": 165,
+      "failed": 0,
+      "scored_items": 165,
+      "score_mean": 0.8666666666666667,
+      "latency_p50_s": 1.6941676195710897,
+      "latency_p95_s": 2.057634500786662
+    },
+    "high_school_geography": {
+      "items": 316,
+      "ok": 316,
+      "failed": 0,
+      "scored_items": 316,
+      "score_mean": 0.8987341772151899,
+      "latency_p50_s": 0.38860825076699257,
+      "latency_p95_s": 0.6296570356935263
+    },
+    "high_school_government_and_politics": {
+      "items": 193,
+      "ok": 193,
+      "failed": 0,
+      "scored_items": 193,
+      "score_mean": 0.9637305699481865,
+      "latency_p50_s": 0.4894287697970867,
+      "latency_p95_s": 0.556297367438674
+    },
+    "high_school_macroeconomics": {
+      "items": 390,
+      "ok": 390,
+      "failed": 0,
+      "scored_items": 390,
+      "score_mean": 0.8846153846153846,
+      "latency_p50_s": 0.4700514804571867,
+      "latency_p95_s": 0.5760319270193577
+    },
+    "high_school_mathematics": {
+      "items": 434,
+      "ok": 434,
+      "failed": 0,
+      "scored_items": 434,
+      "score_mean": 0.6589861751152074,
+      "latency_p50_s": 0.514515720307827,
+      "latency_p95_s": 0.602986766025424
+    },
+    "high_school_microeconomics": {
+      "items": 238,
+      "ok": 238,
+      "failed": 0,
+      "scored_items": 238,
+      "score_mean": 0.9369747899159664,
+      "latency_p50_s": 0.48105661012232304,
+      "latency_p95_s": 0.6273888442665339
+    },
+    "high_school_physics": {
+      "items": 261,
+      "ok": 261,
+      "failed": 0,
+      "scored_items": 261,
+      "score_mean": 0.7624521072796935,
+      "latency_p50_s": 0.6422423161566257,
+      "latency_p95_s": 0.7504889760166407
+    },
+    "high_school_psychology": {
+      "items": 545,
+      "ok": 545,
+      "failed": 0,
+      "scored_items": 545,
+      "score_mean": 0.9431192660550459,
+      "latency_p50_s": 0.47127592749893665,
+      "latency_p95_s": 0.6075153276324272
+    },
+    "high_school_statistics": {
+      "items": 216,
+      "ok": 216,
+      "failed": 0,
+      "scored_items": 216,
+      "score_mean": 0.7870370370370371,
+      "latency_p50_s": 0.7767453957349062,
+      "latency_p95_s": 0.9968580603599548
+    },
+    "high_school_us_history": {
+      "items": 204,
+      "ok": 204,
+      "failed": 0,
+      "scored_items": 204,
+      "score_mean": 0.9313725490196079,
+      "latency_p50_s": 1.4738457910716534,
+      "latency_p95_s": 1.8365213815122843
+    },
+    "high_school_world_history": {
+      "items": 237,
+      "ok": 237,
+      "failed": 0,
+      "scored_items": 237,
+      "score_mean": 0.9113924050632911,
+      "latency_p50_s": 1.6267805937677622,
+      "latency_p95_s": 2.4255606941878796
+    },
+    "human_aging": {
+      "items": 223,
+      "ok": 223,
+      "failed": 0,
+      "scored_items": 223,
+      "score_mean": 0.7937219730941704,
+      "latency_p50_s": 0.4112909007817507,
+      "latency_p95_s": 0.4768940880894661
+    },
+    "human_sexuality": {
+      "items": 257,
+      "ok": 257,
+      "failed": 0,
+      "scored_items": 257,
+      "score_mean": 0.8287937743190662,
+      "latency_p50_s": 0.4333674442023039,
+      "latency_p95_s": 0.5473706554621458
+    },
+    "international_law": {
+      "items": 306,
+      "ok": 306,
+      "failed": 0,
+      "scored_items": 306,
+      "score_mean": 0.8529411764705882,
+      "latency_p50_s": 0.5386315416544676,
+      "latency_p95_s": 0.6961490884423256
+    },
+    "jurisprudence": {
+      "items": 519,
+      "ok": 519,
+      "failed": 0,
+      "scored_items": 519,
+      "score_mean": 0.8497109826589595,
+      "latency_p50_s": 0.5451672002673149,
+      "latency_p95_s": 0.6617377735674381
+    },
+    "logical_fallacies": {
+      "items": 163,
+      "ok": 163,
+      "failed": 0,
+      "scored_items": 163,
+      "score_mean": 0.8711656441717791,
+      "latency_p50_s": 0.4911944270133972,
+      "latency_p95_s": 0.5392885506153107
+    },
+    "machine_learning": {
+      "items": 234,
+      "ok": 234,
+      "failed": 0,
+      "scored_items": 234,
+      "score_mean": 0.7863247863247863,
+      "latency_p50_s": 0.5082765948027372,
+      "latency_p95_s": 0.6839702948927879
+    },
+    "management": {
+      "items": 313,
+      "ok": 313,
+      "failed": 0,
+      "scored_items": 313,
+      "score_mean": 0.8913738019169329,
+      "latency_p50_s": 0.39843167550861835,
+      "latency_p95_s": 0.4516985919326544
+    },
+    "marketing": {
+      "items": 414,
+      "ok": 414,
+      "failed": 0,
+      "scored_items": 414,
+      "score_mean": 0.9251207729468599,
+      "latency_p50_s": 0.42386516742408276,
+      "latency_p95_s": 0.5744743086397648
+    },
+    "medical_genetics": {
+      "items": 100,
+      "ok": 100,
+      "failed": 0,
+      "scored_items": 100,
+      "score_mean": 0.9,
+      "latency_p50_s": 0.4259011596441269,
+      "latency_p95_s": 0.4986481796950102
+    },
+    "miscellaneous": {
+      "items": 783,
+      "ok": 783,
+      "failed": 0,
+      "scored_items": 783,
+      "score_mean": 0.9284802043422733,
+      "latency_p50_s": 0.3599641527980566,
+      "latency_p95_s": 0.48293090611696243
+    },
+    "moral_disputes": {
+      "items": 346,
+      "ok": 346,
+      "failed": 0,
+      "scored_items": 346,
+      "score_mean": 0.8179190751445087,
+      "latency_p50_s": 0.4658247511833906,
+      "latency_p95_s": 0.560384763404727
+    },
+    "moral_scenarios": {
+      "items": 895,
+      "ok": 895,
+      "failed": 0,
+      "scored_items": 895,
+      "score_mean": 0.6480446927374302,
+      "latency_p50_s": 0.48405037447810173,
+      "latency_p95_s": 0.8081827778369188
+    },
+    "nutrition": {
+      "items": 451,
+      "ok": 451,
+      "failed": 0,
+      "scored_items": 451,
+      "score_mean": 0.8558758314855875,
+      "latency_p50_s": 0.47004192136228085,
+      "latency_p95_s": 0.5649259518831968
+    },
+    "philosophy": {
+      "items": 416,
+      "ok": 416,
+      "failed": 0,
+      "scored_items": 416,
+      "score_mean": 0.8221153846153846,
+      "latency_p50_s": 0.4152802173048258,
+      "latency_p95_s": 0.5577728282660246
+    },
+    "prehistory": {
+      "items": 324,
+      "ok": 324,
+      "failed": 0,
+      "scored_items": 324,
+      "score_mean": 0.8919753086419753,
+      "latency_p50_s": 0.4728850442916155,
+      "latency_p95_s": 0.6011613272130489
+    },
+    "professional_accounting": {
+      "items": 457,
+      "ok": 457,
+      "failed": 0,
+      "scored_items": 457,
+      "score_mean": 0.7899343544857768,
+      "latency_p50_s": 0.6132806316018105,
+      "latency_p95_s": 0.923976942896843
+    },
+    "professional_law": {
+      "items": 1745,
+      "ok": 1745,
+      "failed": 0,
+      "scored_items": 1745,
+      "score_mean": 0.6744985673352436,
+      "latency_p50_s": 1.44940129481256,
+      "latency_p95_s": 2.0120338033884764
+    },
+    "professional_medicine": {
+      "items": 648,
+      "ok": 648,
+      "failed": 0,
+      "scored_items": 648,
+      "score_mean": 0.8657407407407407,
+      "latency_p50_s": 0.4642083290964365,
+      "latency_p95_s": 1.3181926310062408
+    },
+    "professional_psychology": {
+      "items": 844,
+      "ok": 844,
+      "failed": 0,
+      "scored_items": 844,
+      "score_mean": 0.8530805687203792,
+      "latency_p50_s": 0.5011451430618763,
+      "latency_p95_s": 0.6766058374196291
+    },
+    "public_relations": {
+      "items": 284,
+      "ok": 284,
+      "failed": 0,
+      "scored_items": 284,
+      "score_mean": 0.7887323943661971,
+      "latency_p50_s": 0.39770592004060745,
+      "latency_p95_s": 0.5003900192677975
+    },
+    "security_studies": {
+      "items": 245,
+      "ok": 245,
+      "failed": 0,
+      "scored_items": 245,
+      "score_mean": 0.8081632653061225,
+      "latency_p50_s": 0.9727517571300268,
+      "latency_p95_s": 1.160932756960392
+    },
+    "sociology": {
+      "items": 427,
+      "ok": 427,
+      "failed": 0,
+      "scored_items": 427,
+      "score_mean": 0.8618266978922716,
+      "latency_p50_s": 0.41134017147123814,
+      "latency_p95_s": 0.5700352340936661
+    },
+    "us_foreign_policy": {
+      "items": 100,
+      "ok": 100,
+      "failed": 0,
+      "scored_items": 100,
+      "score_mean": 0.96,
+      "latency_p50_s": 0.43401066958904266,
+      "latency_p95_s": 0.47871690429747105
+    },
+    "virology": {
+      "items": 335,
+      "ok": 335,
+      "failed": 0,
+      "scored_items": 335,
+      "score_mean": 0.7223880597014926,
+      "latency_p50_s": 0.40802039206027985,
+      "latency_p95_s": 0.4832272455096245
+    },
+    "world_religions": {
+      "items": 331,
+      "ok": 331,
+      "failed": 0,
+      "scored_items": 331,
+      "score_mean": 0.879154078549849,
+      "latency_p50_s": 0.34872457198798656,
+      "latency_p95_s": 0.42353971116244793
+    },
+    "agronomy": {
+      "items": 169,
+      "ok": 169,
+      "failed": 0,
+      "scored_items": 169,
+      "score_mean": 0.8165680473372781,
+      "latency_p50_s": 0.3881679642945528,
+      "latency_p95_s": 0.44166410714387894
+    },
+    "ancient_chinese": {
+      "items": 164,
+      "ok": 164,
+      "failed": 0,
+      "scored_items": 164,
+      "score_mean": 0.5609756097560976,
+      "latency_p50_s": 0.4542210251092911,
+      "latency_p95_s": 0.5321845449507236
+    },
+    "arts": {
+      "items": 160,
+      "ok": 160,
+      "failed": 0,
+      "scored_items": 160,
+      "score_mean": 0.95,
+      "latency_p50_s": 0.3706370536237955,
+      "latency_p95_s": 0.4303140491247177
+    },
+    "chinese_civil_service_exam": {
+      "items": 160,
+      "ok": 160,
+      "failed": 0,
+      "scored_items": 160,
+      "score_mean": 0.81875,
+      "latency_p50_s": 0.7851683795452118,
+      "latency_p95_s": 1.042002247646451
+    },
+    "chinese_driving_rule": {
+      "items": 131,
+      "ok": 131,
+      "failed": 0,
+      "scored_items": 131,
+      "score_mean": 0.9465648854961832,
+      "latency_p50_s": 0.43426571786403656,
+      "latency_p95_s": 0.4648373872041702
+    },
+    "chinese_food_culture": {
+      "items": 136,
+      "ok": 136,
+      "failed": 0,
+      "scored_items": 136,
+      "score_mean": 0.8382352941176471,
+      "latency_p50_s": 0.41811640560626984,
+      "latency_p95_s": 0.4853459279984236
+    },
+    "chinese_foreign_policy": {
+      "items": 107,
+      "ok": 107,
+      "failed": 0,
+      "scored_items": 107,
+      "score_mean": 0.8317757009345794,
+      "latency_p50_s": 0.6372981127351522,
+      "latency_p95_s": 0.8017047252506018
+    },
+    "chinese_history": {
+      "items": 323,
+      "ok": 323,
+      "failed": 0,
+      "scored_items": 323,
+      "score_mean": 0.8885448916408669,
+      "latency_p50_s": 0.6978863067924976,
+      "latency_p95_s": 0.7925167605280876
+    },
+    "chinese_literature": {
+      "items": 204,
+      "ok": 204,
+      "failed": 0,
+      "scored_items": 204,
+      "score_mean": 0.8088235294117647,
+      "latency_p50_s": 0.4406498000025749,
+      "latency_p95_s": 0.5176359284669161
+    },
+    "chinese_teacher_qualification": {
+      "items": 179,
+      "ok": 179,
+      "failed": 0,
+      "scored_items": 179,
+      "score_mean": 0.9050279329608939,
+      "latency_p50_s": 0.5137793831527233,
+      "latency_p95_s": 0.6164340302348137
+    },
+    "college_actuarial_science": {
+      "items": 106,
+      "ok": 106,
+      "failed": 0,
+      "scored_items": 106,
+      "score_mean": 0.41509433962264153,
+      "latency_p50_s": 0.7219006586819887,
+      "latency_p95_s": 0.9650497157126665
+    },
+    "college_education": {
+      "items": 107,
+      "ok": 107,
+      "failed": 0,
+      "scored_items": 107,
+      "score_mean": 0.9345794392523364,
+      "latency_p50_s": 0.4663484822958708,
+      "latency_p95_s": 0.5936192888766527
+    },
+    "college_engineering_hydrology": {
+      "items": 106,
+      "ok": 106,
+      "failed": 0,
+      "scored_items": 106,
+      "score_mean": 0.8679245283018868,
+      "latency_p50_s": 0.4768402837216854,
+      "latency_p95_s": 0.5454413443803787
+    },
+    "college_law": {
+      "items": 108,
+      "ok": 108,
+      "failed": 0,
+      "scored_items": 108,
+      "score_mean": 0.7962962962962963,
+      "latency_p50_s": 0.5791232325136662,
+      "latency_p95_s": 0.6444741822779179
+    },
+    "college_medical_statistics": {
+      "items": 106,
+      "ok": 106,
+      "failed": 0,
+      "scored_items": 106,
+      "score_mean": 0.7924528301886793,
+      "latency_p50_s": 0.5198782812803984,
+      "latency_p95_s": 0.6274357419461012
+    },
+    "computer_science": {
+      "items": 204,
+      "ok": 204,
+      "failed": 0,
+      "scored_items": 204,
+      "score_mean": 0.8823529411764706,
+      "latency_p50_s": 0.449385404586792,
+      "latency_p95_s": 0.56929318793118
+    },
+    "construction_project_management": {
+      "items": 139,
+      "ok": 139,
+      "failed": 0,
+      "scored_items": 139,
+      "score_mean": 0.7410071942446043,
+      "latency_p50_s": 0.4483127612620592,
+      "latency_p95_s": 0.5146942008286715
+    },
+    "economics": {
+      "items": 159,
+      "ok": 159,
+      "failed": 0,
+      "scored_items": 159,
+      "score_mean": 0.8930817610062893,
+      "latency_p50_s": 0.4156037289649248,
+      "latency_p95_s": 0.468357952311635
+    },
+    "education": {
+      "items": 163,
+      "ok": 163,
+      "failed": 0,
+      "scored_items": 163,
+      "score_mean": 0.7484662576687117,
+      "latency_p50_s": 0.3746236711740494,
+      "latency_p95_s": 0.4137707594782114
+    },
+    "elementary_chinese": {
+      "items": 252,
+      "ok": 252,
+      "failed": 0,
+      "scored_items": 252,
+      "score_mean": 0.7976190476190477,
+      "latency_p50_s": 0.42827145382761955,
+      "latency_p95_s": 0.5149671249091625
+    },
+    "elementary_commonsense": {
+      "items": 198,
+      "ok": 198,
+      "failed": 0,
+      "scored_items": 198,
+      "score_mean": 0.7828282828282829,
+      "latency_p50_s": 0.3723021447658539,
+      "latency_p95_s": 0.42197664827108383
+    },
+    "elementary_information_and_technology": {
+      "items": 238,
+      "ok": 238,
+      "failed": 0,
+      "scored_items": 238,
+      "score_mean": 0.9621848739495799,
+      "latency_p50_s": 0.3926210552453995,
+      "latency_p95_s": 0.4750261828303337
+    },
+    "ethnology": {
+      "items": 135,
+      "ok": 135,
+      "failed": 0,
+      "scored_items": 135,
+      "score_mean": 0.8222222222222222,
+      "latency_p50_s": 0.3995733205229044,
+      "latency_p95_s": 0.4579142611473799
+    },
+    "food_science": {
+      "items": 143,
+      "ok": 143,
+      "failed": 0,
+      "scored_items": 143,
+      "score_mean": 0.7762237762237763,
+      "latency_p50_s": 0.3733340632170439,
+      "latency_p95_s": 0.419292027130723
+    },
+    "genetics": {
+      "items": 176,
+      "ok": 176,
+      "failed": 0,
+      "scored_items": 176,
+      "score_mean": 0.7784090909090909,
+      "latency_p50_s": 0.4705705065280199,
+      "latency_p95_s": 0.5372180510312319
+    },
+    "high_school_politics": {
+      "items": 143,
+      "ok": 143,
+      "failed": 0,
+      "scored_items": 143,
+      "score_mean": 0.8251748251748252,
+      "latency_p50_s": 0.7020297478884459,
+      "latency_p95_s": 0.844936965033412
+    },
+    "journalism": {
+      "items": 172,
+      "ok": 172,
+      "failed": 0,
+      "scored_items": 172,
+      "score_mean": 0.8023255813953488,
+      "latency_p50_s": 0.38518534414470196,
+      "latency_p95_s": 0.4326963424682617
+    },
+    "legal_and_moral_basis": {
+      "items": 214,
+      "ok": 214,
+      "failed": 0,
+      "scored_items": 214,
+      "score_mean": 0.9672897196261683,
+      "latency_p50_s": 0.4838900715112686,
+      "latency_p95_s": 0.5590525940060616
+    },
+    "logical": {
+      "items": 123,
+      "ok": 123,
+      "failed": 0,
+      "scored_items": 123,
+      "score_mean": 0.8048780487804879,
+      "latency_p50_s": 0.4314288515597582,
+      "latency_p95_s": 0.49065028689801693
+    },
+    "marxist_theory": {
+      "items": 189,
+      "ok": 189,
+      "failed": 0,
+      "scored_items": 189,
+      "score_mean": 0.9365079365079365,
+      "latency_p50_s": 0.44233705662190914,
+      "latency_p95_s": 0.475480018183589
+    },
+    "modern_chinese": {
+      "items": 116,
+      "ok": 116,
+      "failed": 0,
+      "scored_items": 116,
+      "score_mean": 0.7068965517241379,
+      "latency_p50_s": 0.5657871644943953,
+      "latency_p95_s": 0.7090172227472067
+    },
+    "security_study": {
+      "items": 135,
+      "ok": 135,
+      "failed": 0,
+      "scored_items": 135,
+      "score_mean": 0.9037037037037037,
+      "latency_p50_s": 0.42074040696024895,
+      "latency_p95_s": 0.4882362298667431
+    },
+    "sports_science": {
+      "items": 165,
+      "ok": 165,
+      "failed": 0,
+      "scored_items": 165,
+      "score_mean": 0.793939393939394,
+      "latency_p50_s": 0.3732844553887844,
+      "latency_p95_s": 0.4559407941997051
+    },
+    "traditional_chinese_medicine": {
+      "items": 185,
+      "ok": 185,
+      "failed": 0,
+      "scored_items": 185,
+      "score_mean": 0.8594594594594595,
+      "latency_p50_s": 0.41204963251948357,
+      "latency_p95_s": 0.4953218549489975
+    },
+    "world_history": {
+      "items": 161,
+      "ok": 161,
+      "failed": 0,
+      "scored_items": 161,
+      "score_mean": 0.9254658385093167,
+      "latency_p50_s": 0.6963549666106701,
+      "latency_p95_s": 0.7671960890293121
+    },
+    "main": {
+      "items": 1319,
+      "ok": 1319,
+      "failed": 0,
+      "scored_items": 1319,
+      "score_mean": 0.7922668688400303,
+      "latency_p50_s": 9.816495835781097,
+      "latency_p95_s": 13.136808581650257
+    }
+  },
+  "items_sha256": "9b65268478b32ad8d077c40f4d914f421055f521ce2eefd832048e2b10ce618b"
+}

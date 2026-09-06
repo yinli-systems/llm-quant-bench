@@ -21,6 +21,9 @@ def run_load_test(
     stream: bool,
     requests: int | None = None,
     duration_s: float | None = None,
+    slo_ttft_s: float | None = None,
+    slo_tpot_s: float | None = None,
+    slo_e2e_s: float | None = None,
 ) -> dict[str, Any]:
     if not prompts:
         raise ValueError("prompts must contain at least one prompt")
@@ -32,6 +35,13 @@ def run_load_test(
         raise ValueError("requests must be >= 1")
     if duration_s is not None and duration_s <= 0:
         raise ValueError("duration_s must be > 0")
+    for name, value in (
+        ("slo_ttft_s", slo_ttft_s),
+        ("slo_tpot_s", slo_tpot_s),
+        ("slo_e2e_s", slo_e2e_s),
+    ):
+        if value is not None and value <= 0:
+            raise ValueError(f"{name} must be > 0")
 
     out_dir.mkdir(parents=True, exist_ok=True)
     results_path = out_dir / "load_results.jsonl"
@@ -46,9 +56,7 @@ def run_load_test(
     def should_stop() -> bool:
         if duration_s is not None and time.monotonic() - started >= duration_s:
             return True
-        if requests is not None and next_request_id >= requests:
-            return True
-        return False
+        return requests is not None and next_request_id >= requests
 
     def claim_request() -> tuple[int, str] | None:
         nonlocal next_request_id
@@ -76,10 +84,13 @@ def run_load_test(
                 "latency_s": result.latency_s,
                 "ttft_s": result.ttft_s,
                 "inter_token_latency_s": result.inter_token_latency_s,
+                "inter_chunk_latency_s": result.inter_chunk_latency_s,
                 "time_per_output_token_s": result.time_per_output_token_s,
                 "output_tokens": result.output_tokens,
                 "prompt_tokens": result.prompt_tokens,
                 "tokens_per_second": result.tokens_per_second,
+                "stream_completed": result.stream_completed,
+                "token_count_source": result.token_count_source,
             }
             local_records.append(record)
 
@@ -101,6 +112,9 @@ def run_load_test(
         concurrency=concurrency,
         model_name=model.name,
         stream=stream,
+        slo_ttft_s=slo_ttft_s,
+        slo_tpot_s=slo_tpot_s,
+        slo_e2e_s=slo_e2e_s,
     )
     summary["started_at_epoch_s"] = started_wall
     summary["finished_at_epoch_s"] = finished_wall
@@ -119,6 +133,9 @@ def summarize_load_records(
     concurrency: int,
     model_name: str,
     stream: bool,
+    slo_ttft_s: float | None = None,
+    slo_tpot_s: float | None = None,
+    slo_e2e_s: float | None = None,
 ) -> dict[str, Any]:
     total = len(records)
     ok_records = [record for record in records if record.get("ok")]
@@ -127,12 +144,13 @@ def summarize_load_records(
     latency = _present([record.get("latency_s") for record in ok_records])
     ttft = _present([record.get("ttft_s") for record in ok_records])
     itl = _present([record.get("inter_token_latency_s") for record in ok_records])
+    icl = _present([record.get("inter_chunk_latency_s") for record in ok_records])
     tpot = _present([record.get("time_per_output_token_s") for record in ok_records])
     tps = _present([record.get("tokens_per_second") for record in ok_records])
     output_tokens = sum(int(record.get("output_tokens") or 0) for record in ok_records)
     prompt_tokens = sum(int(record.get("prompt_tokens") or 0) for record in ok_records)
 
-    return {
+    summary = {
         "model": model_name,
         "stream": stream,
         "concurrency": concurrency,
@@ -165,6 +183,12 @@ def summarize_load_records(
             "p95_s": quantile(itl, 0.95),
             "p99_s": quantile(itl, 0.99),
         },
+        "inter_chunk_latency": {
+            "p50_s": quantile(icl, 0.50),
+            "p95_s": quantile(icl, 0.95),
+            "p99_s": quantile(icl, 0.99),
+            "definition": "Spacing between non-empty SSE content chunks; chunks are not tokens.",
+        },
         "time_per_output_token": {
             "p50_s": quantile(tpot, 0.50),
             "p95_s": quantile(tpot, 0.95),
@@ -177,6 +201,67 @@ def summarize_load_records(
         },
         "errors": dict(errors.most_common()),
     }
+    summary["goodput"] = summarize_goodput(
+        records,
+        benchmark_duration_s=benchmark_duration_s,
+        slo_ttft_s=slo_ttft_s,
+        slo_tpot_s=slo_tpot_s,
+        slo_e2e_s=slo_e2e_s,
+    )
+    return summary
+
+
+def summarize_goodput(
+    records: list[dict[str, Any]],
+    *,
+    benchmark_duration_s: float,
+    slo_ttft_s: float | None = None,
+    slo_tpot_s: float | None = None,
+    slo_e2e_s: float | None = None,
+) -> dict[str, Any] | None:
+    constraints = {
+        "ttft_s": slo_ttft_s,
+        "time_per_output_token_s": slo_tpot_s,
+        "latency_s": slo_e2e_s,
+    }
+    active = {metric: limit for metric, limit in constraints.items() if limit is not None}
+    if not active:
+        return None
+    if benchmark_duration_s <= 0:
+        raise ValueError("benchmark_duration_s must be positive")
+
+    compliant: list[dict[str, Any]] = []
+    violations: Counter[str] = Counter()
+    for record in records:
+        if not record.get("ok"):
+            violations["request_failed"] += 1
+            continue
+        record_compliant = True
+        for metric, limit in active.items():
+            value = record.get(metric)
+            if value is None:
+                violations[f"{metric}_missing"] += 1
+                record_compliant = False
+            elif float(value) > float(limit):
+                violations[f"{metric}_exceeded"] += 1
+                record_compliant = False
+        if record_compliant:
+            compliant.append(record)
+
+    output_tokens = sum(int(record.get("output_tokens") or 0) for record in compliant)
+    return {
+        "slo": active,
+        "compliant_requests": len(compliant),
+        "total_requests": len(records),
+        "compliance_rate": safe_ratio(len(compliant), len(records)),
+        "request_goodput": len(compliant) / benchmark_duration_s,
+        "output_token_goodput": output_tokens / benchmark_duration_s,
+        "violations": dict(violations.most_common()),
+        "definition": (
+            "A request contributes to goodput only if it succeeds and every configured "
+            "per-request SLO metric is present and at or below its threshold."
+        ),
+    }
 
 
 def render_load_report(summary: dict[str, Any]) -> str:
@@ -185,8 +270,10 @@ def render_load_report(summary: dict[str, Any]) -> str:
     latency = summary["latency"]
     ttft = summary["ttft"]
     itl = summary["inter_token_latency"]
+    icl = summary["inter_chunk_latency"]
     tpot = summary["time_per_output_token"]
     decode = summary["per_request_decode_speed"]
+    goodput = summary.get("goodput")
 
     def num(value: float | None, suffix: str = "") -> str:
         return "n/a" if value is None else f"{value:.3f}{suffix}"
@@ -194,8 +281,7 @@ def render_load_report(summary: dict[str, Any]) -> str:
     def pct(value: float | None) -> str:
         return "n/a" if value is None else f"{value * 100:.2f}%"
 
-    return "\n".join(
-        [
+    lines = [
             "# Candidate Load Test Report",
             "",
             "## Scope",
@@ -218,15 +304,37 @@ def render_load_report(summary: dict[str, Any]) -> str:
             f"- p95 request latency: {num(latency['p95_s'], 's')}",
             f"- p95 TTFT: {num(ttft['p95_s'], 's')}",
             f"- p95 inter-token latency: {num(itl['p95_s'], 's')}",
+            f"- p95 inter-chunk latency: {num(icl['p95_s'], 's')}",
             f"- p95 time per output token: {num(tpot['p95_s'], 's')}",
             f"- p05 per-request decode speed: {num(decode['p05_tokens_per_second'], ' tok/s')}",
+        ]
+    if goodput is not None:
+        lines.extend(
+            [
+                "",
+                "## SLO Goodput",
+                "",
+                f"- SLOs: {json.dumps(goodput['slo'], sort_keys=True)}",
+                (
+                    f"- Compliant requests: {goodput['compliant_requests']} / "
+                    f"{goodput['total_requests']}"
+                ),
+                f"- Compliance rate: {pct(goodput['compliance_rate'])}",
+                f"- Request goodput: {num(goodput['request_goodput'], ' req/s')}",
+                f"- Output token goodput: {num(goodput['output_token_goodput'], ' tok/s')}",
+                f"- Violations: {json.dumps(goodput['violations'], sort_keys=True)}",
+            ]
+        )
+    lines.extend(
+        [
             "",
             "## Notes",
             "",
             "- This tests an already-running candidate endpoint. It does not load, quantize, or optimize a 70B model by itself.",
             "- For publishable L20 capacity numbers, also run vLLM bench serve or NVIDIA GenAI-Perf with fixed input/output lengths and request rates.",
         ]
-    ) + "\n"
+    )
+    return "\n".join(lines) + "\n"
 
 
 def prompts_from_dataset(dataset: list[dict[str, Any]]) -> list[str]:

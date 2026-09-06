@@ -51,7 +51,10 @@ Result:
 
 ## Quality Retention
 
-Goal: compare a high-quality baseline against the L20 AWQ candidate.
+Status: completed for the frozen MMLU, CMMLU, and GSM8K bundle. See
+[the committed evidence](../results/qwen25-72b-retention-v1/EVIDENCE.md).
+
+Goal: compare a high-quality baseline against the AWQ candidate.
 
 Required baseline:
 
@@ -60,15 +63,15 @@ Required baseline:
 
 Important caveat:
 
-The AWQ benchmark results alone are not a baseline-vs-AWQ quality-retention
-measurement. They are candidate absolute scores. A retention claim requires a
-matched FP16/BF16 baseline run with the same dataset snapshot, prompts, chat
-template, decoding parameters, scoring code, and answer extraction. Until that
-baseline exists, the correct wording is:
+The earlier single-L20 AWQ benchmark alone was not a retention measurement. The
+new ParaCloud run supplies the matched FP16/BF16 baseline with the same frozen
+items, prompts, decoding parameters, scoring code, and answer extraction. The
+correct wording is now:
 
 ```text
-The single-L20 AWQ candidate is stable and shows strong absolute quality on the
-tested benchmarks, but BF16/FP16-vs-AWQ quality retention remains pending.
+On the exact 26,943-item frozen MMLU, CMMLU, and GSM8K bundle, AWQ retained
+99.451%, 99.359%, and 98.122% of BF16 score respectively, with zero request
+failures in either arm.
 ```
 
 Do not use wording such as:
@@ -100,10 +103,14 @@ Current execution status:
 - MMLU, CMMLU, and GSM8K: completed with `scripts/run_quality_eval.py`; see [docs/l20-qwen72b-awq-quality-results.md](l20-qwen72b-awq-quality-results.md).
 - MT-Bench: 80/80 answer generations completed; official scoring still requires an external judge endpoint/key and answer-order-swapped judging.
 - LongBench: 8K subset completed with 60/60 successful requests using `max_model_len=8192`; the reported score is lightweight max token-F1, not an official leaderboard score.
-- FP16/BF16 baseline: blocked on an external or multi-GPU endpoint. A single L20 cannot host Qwen2.5-72B FP16/BF16, so true baseline-vs-AWQ retention remains pending until a baseline endpoint is available.
+- FP16/BF16 baseline: completed on 8x RTX 4090 across four ParaCloud nodes;
+  model revision, GPU inventory, summaries, paired deltas, and checksums are
+  committed under `results/qwen25-72b-retention-v1/`.
 - Strict follow-up tooling: added readiness checks, LongBench v1 task-metric postprocessing, repeated load runs, and confidence-interval summaries. See [strict-experiment-suite.md](strict-experiment-suite.md).
 - Repeated fixed-shape CI: completed c1/c4/c8/c16 with 3 repeats each and 100% success. c16 averaged 127.22 +/- 12.68 output tok/s and matched the earlier 127.70 output tok/s screening result.
-- BF16 baseline and MT-Bench judge preflight: blocked as of 2026-05-20 because `BASELINE_BASE_URL`, `BASELINE_MODEL`, `JUDGE_BASE_URL`, `JUDGE_MODEL`, and `JUDGE_API_KEY` are not configured, and the host has only AWQ model directories under `/home/USER/models`.
+- MT-Bench judge preflight remains blocked because a judge endpoint/model/key is
+  not configured. This does not block the completed objective MMLU/CMMLU/GSM8K
+  retention run.
 
 Current AWQ candidate quality snapshot:
 

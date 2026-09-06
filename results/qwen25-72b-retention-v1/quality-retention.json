@@ -1,0 +1,97 @@
+{
+  "status": "complete",
+  "items_sha256": "9b65268478b32ad8d077c40f4d914f421055f521ce2eefd832048e2b10ce618b",
+  "formula": "quality_retention = candidate_score / baseline_score",
+  "delta_percentage_points_formula": "100 * (candidate_score - baseline_score)",
+  "rows": [
+    {
+      "benchmark": "mmlu",
+      "baseline_score": 0.8172624982196268,
+      "candidate_score": 0.8127759578407634,
+      "quality_retention": 0.9945102823283374,
+      "delta_percentage_points": -0.4486540378863424,
+      "baseline_items": 14042,
+      "candidate_items": 14042,
+      "baseline_latency_p50_s": 0.6145855411887169,
+      "candidate_latency_p50_s": 0.5090467948466539,
+      "baseline_latency_p95_s": 1.709752842783928,
+      "candidate_latency_p95_s": 1.6372177954763174
+    },
+    {
+      "benchmark": "cmmlu",
+      "baseline_score": 0.8355206354688309,
+      "candidate_score": 0.8301675012951131,
+      "quality_retention": 0.9935930556990803,
+      "delta_percentage_points": -0.5353134173717855,
+      "baseline_items": 11582,
+      "candidate_items": 11582,
+      "baseline_latency_p50_s": 0.5676724910736084,
+      "candidate_latency_p50_s": 0.4458893649280071,
+      "baseline_latency_p95_s": 0.8543174229562283,
+      "candidate_latency_p95_s": 0.751181535422802
+    },
+    {
+      "benchmark": "gsm8k",
+      "baseline_score": 0.8074298711144806,
+      "candidate_score": 0.7922668688400303,
+      "quality_retention": 0.9812206572769954,
+      "delta_percentage_points": -1.5163002274450332,
+      "baseline_items": 1319,
+      "candidate_items": 1319,
+      "baseline_latency_p50_s": 18.45776417851448,
+      "candidate_latency_p50_s": 9.816495835781097,
+      "baseline_latency_p95_s": 24.66111148521304,
+      "candidate_latency_p95_s": 13.136808581650257
+    }
+  ],
+  "paired_analysis": {
+    "cmmlu": {
+      "paired_items": 11582,
+      "mean_score_delta": -0.005353134173717838,
+      "mean_score_delta_percentage_points": -0.5353134173717837,
+      "normal_approx_delta_95": [
+        -0.008243333200225505,
+        -0.0024629351472101697
+      ],
+      "baseline_only_wins": 177,
+      "candidate_only_wins": 115,
+      "ties": 11290,
+      "interval_note": "Paired normal-approximation interval over per-item score differences."
+    },
+    "gsm8k": {
+      "paired_items": 1319,
+      "mean_score_delta": -0.015163002274450341,
+      "mean_score_delta_percentage_points": -1.5163002274450341,
+      "normal_approx_delta_95": [
+        -0.03209204955959334,
+        0.001766045010692661
+      ],
+      "baseline_only_wins": 75,
+      "candidate_only_wins": 55,
+      "ties": 1189,
+      "interval_note": "Paired normal-approximation interval over per-item score differences."
+    },
+    "mmlu": {
+      "paired_items": 14042,
+      "mean_score_delta": -0.00448654037886341,
+      "mean_score_delta_percentage_points": -0.448654037886341,
+      "normal_approx_delta_95": [
+        -0.007122851746330235,
+        -0.0018502290113965856
+      ],
+      "baseline_only_wins": 210,
+      "candidate_only_wins": 147,
+      "ties": 13685,
+      "interval_note": "Paired normal-approximation interval over per-item score differences."
+    }
+  },
+  "execution": {
+    "baseline_elapsed_s": 5231.203340239823,
+    "candidate_elapsed_s": 3503.448845198378,
+    "baseline_gpus": 8,
+    "candidate_gpus": 2,
+    "baseline_eval_gpu_seconds": 41849.62672191858,
+    "candidate_eval_gpu_seconds": 7006.897690396756,
+    "scope_note": "GPU-seconds cover evaluation wall time, excluding model download and server startup."
+  }
+}

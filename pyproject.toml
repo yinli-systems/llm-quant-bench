@@ -5,6 +5,11 @@ description = "Benchmark quantized LLM quality, stability, and serving usability
 requires-python = ">=3.10"
 dependencies = []
 
+[project.optional-dependencies]
+dev = [
+  "pytest>=8",
+]
+
 [project.scripts]
 llm-quant-bench = "llm_quant_bench.cli:main"
 
@@ -12,3 +17,6 @@ llm-quant-bench = "llm_quant_bench.cli:main"
 requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools.packages.find]
+include = ["llm_quant_bench*"]
+exclude = ["paper*"]

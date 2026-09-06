@@ -1,5 +1,5 @@
-import tempfile
 import json
+import tempfile
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -19,7 +19,7 @@ class LoadMockHandler(BaseHTTPRequestHandler):
             self.send_header("Content-Type", "text/event-stream")
             self.end_headers()
             event = {"choices": [{"delta": {"content": text}}]}
-            self.wfile.write(f"data: {json.dumps(event)}\n\n".encode("utf-8"))
+            self.wfile.write(f"data: {json.dumps(event)}\n\n".encode())
             self.wfile.write(b"data: [DONE]\n\n")
             return
         payload = {
@@ -66,6 +66,72 @@ class LoadSummaryTest(unittest.TestCase):
         self.assertAlmostEqual(summary["requests"]["success_rate"], 0.5)
         self.assertAlmostEqual(summary["tokens"]["output_token_throughput"], 4.0)
         self.assertEqual(summary["errors"]["timeout"], 1)
+        self.assertIsNone(summary["goodput"])
+
+    def test_summary_reports_slo_goodput_and_missing_metrics_fail_closed(self):
+        records = [
+            {
+                "ok": True,
+                "latency_s": 1.0,
+                "ttft_s": 0.2,
+                "time_per_output_token_s": 0.04,
+                "output_tokens": 20,
+            },
+            {
+                "ok": True,
+                "latency_s": 2.0,
+                "ttft_s": 0.2,
+                "time_per_output_token_s": 0.04,
+                "output_tokens": 30,
+            },
+            {
+                "ok": True,
+                "latency_s": 1.0,
+                "ttft_s": None,
+                "time_per_output_token_s": 0.04,
+                "output_tokens": 40,
+            },
+            {"ok": False, "error": "timeout"},
+        ]
+
+        summary = summarize_load_records(
+            records,
+            benchmark_duration_s=10.0,
+            concurrency=2,
+            model_name="candidate",
+            stream=True,
+            slo_ttft_s=0.5,
+            slo_tpot_s=0.05,
+            slo_e2e_s=1.5,
+        )
+
+        goodput = summary["goodput"]
+        self.assertEqual(goodput["compliant_requests"], 1)
+        self.assertAlmostEqual(goodput["compliance_rate"], 0.25)
+        self.assertAlmostEqual(goodput["request_goodput"], 0.1)
+        self.assertAlmostEqual(goodput["output_token_goodput"], 2.0)
+        self.assertEqual(goodput["violations"]["latency_s_exceeded"], 1)
+        self.assertEqual(goodput["violations"]["ttft_s_missing"], 1)
+        self.assertEqual(goodput["violations"]["request_failed"], 1)
+
+    def test_nonpositive_slo_is_rejected(self):
+        with (
+            tempfile.TemporaryDirectory() as tmp,
+            self.assertRaisesRegex(ValueError, "slo_ttft_s must be > 0"),
+        ):
+            run_load_test(
+                model=ModelConfig(
+                    name="mock-candidate",
+                    base_url="http://127.0.0.1:1/v1",
+                    model="mock-model",
+                ),
+                prompts=["hello"],
+                out_dir=Path(tmp),
+                concurrency=1,
+                stream=True,
+                requests=1,
+                slo_ttft_s=0.0,
+            )
 
 
 class LoadEndToEndTest(unittest.TestCase):

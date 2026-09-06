@@ -6,9 +6,9 @@ from dataclasses import replace
 from pathlib import Path
 
 from .client import ModelConfig
-from .metrics import perplexity_delta_percent, perplexity_from_token_logprobs
 from .demo import run_demo
 from .load import prompts_from_dataset, run_load_test
+from .metrics import perplexity_delta_percent, perplexity_from_token_logprobs
 from .runner import (
     BenchmarkConfig,
     BenchmarkTargets,
@@ -64,6 +64,15 @@ def main(argv: list[str] | None = None) -> int:
     load_parser.add_argument("--concurrency", type=int, default=1)
     load_parser.add_argument("--requests", type=int)
     load_parser.add_argument("--duration-seconds", type=float)
+    load_parser.add_argument(
+        "--slo-ttft-ms", type=float, help="Count goodput only when per-request TTFT meets this SLO."
+    )
+    load_parser.add_argument(
+        "--slo-tpot-ms", type=float, help="Count goodput only when per-request TPOT meets this SLO."
+    )
+    load_parser.add_argument(
+        "--slo-e2e-ms", type=float, help="Count goodput only when end-to-end latency meets this SLO."
+    )
     load_parser.add_argument("--no-stream", action="store_true")
     load_parser.add_argument(
         "--stream-usage",
@@ -139,6 +148,9 @@ def main(argv: list[str] | None = None) -> int:
             stream=not args.no_stream,
             requests=args.requests,
             duration_s=args.duration_seconds,
+            slo_ttft_s=_milliseconds_to_seconds(args.slo_ttft_ms),
+            slo_tpot_s=_milliseconds_to_seconds(args.slo_tpot_ms),
+            slo_e2e_s=_milliseconds_to_seconds(args.slo_e2e_ms),
         )
         print(json.dumps(summary, ensure_ascii=False, indent=2))
         return 0
@@ -172,9 +184,13 @@ def _with_stream_usage(config: BenchmarkConfig) -> BenchmarkConfig:
 
 
 def _with_stream_usage_model(model: ModelConfig) -> ModelConfig:
-    stream_options = dict(getattr(model, "stream_options") or {})
+    stream_options = dict(model.stream_options or {})
     stream_options["include_usage"] = True
     return replace(model, stream_options=stream_options)
+
+
+def _milliseconds_to_seconds(value: float | None) -> float | None:
+    return None if value is None else value / 1000.0
 
 
 if __name__ == "__main__":

@@ -14,7 +14,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-
 REPO_ROOT = Path(__file__).resolve().parents[1]
 QUALITY_SCRIPT = REPO_ROOT / "scripts" / "run_quality_eval.py"
 RETENTION_SCRIPT = REPO_ROOT / "scripts" / "summarize_quality_retention.py"
@@ -28,6 +27,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--candidate-base-url", required=True)
     parser.add_argument("--candidate-model", required=True)
     parser.add_argument("--benchmarks", nargs="+", required=True)
+    parser.add_argument("--items-file")
     parser.add_argument("--cmmlu-dir")
     parser.add_argument("--longbench-dir")
     parser.add_argument("--longbench-tasks", nargs="*")
@@ -69,6 +69,10 @@ def main() -> int:
         str(baseline_out / "summary.json"),
         "--candidate-summary",
         str(candidate_out / "summary.json"),
+        "--baseline-samples",
+        str(baseline_out / "samples.jsonl"),
+        "--candidate-samples",
+        str(candidate_out / "samples.jsonl"),
         "--out",
         str(retention_out),
     ]
@@ -120,6 +124,8 @@ def quality_eval_command(
         cmd.extend(["--api-key", api_key])
     if args.cmmlu_dir:
         cmd.extend(["--cmmlu-dir", args.cmmlu_dir])
+    if getattr(args, "items_file", None):
+        cmd.extend(["--items-file", args.items_file])
     if args.longbench_dir:
         cmd.extend(["--longbench-dir", args.longbench_dir])
     if args.longbench_tasks:

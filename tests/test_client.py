@@ -1,9 +1,15 @@
 import json
+import io
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
-from llm_quant_bench.client import ModelConfig, OpenAIChatClient, _is_loopback_url
+from llm_quant_bench.client import (
+    ModelConfig,
+    OpenAIChatClient,
+    _is_loopback_url,
+    _iter_sse_data,
+)
 
 
 class OpenAIMockHandler(BaseHTTPRequestHandler):
@@ -30,7 +36,9 @@ class OpenAIMockHandler(BaseHTTPRequestHandler):
                     "usage": {"prompt_tokens": 3, "completion_tokens": 2},
                 }
                 self.wfile.write(f"data: {json.dumps(event)}\n\n".encode("utf-8"))
-            self.wfile.write(b"data: [DONE]\n\n")
+            prompt = body["messages"][0]["content"]
+            if prompt != "incomplete":
+                self.wfile.write(b"data: [DONE]\n\n")
             return
 
         payload = {
@@ -81,6 +89,10 @@ class ClientTest(unittest.TestCase):
         self.assertGreater(result.output_tokens, 0)
         self.assertIsNotNone(result.ttft_s)
         self.assertIsNone(result.prompt_tokens)
+        self.assertIsNone(result.inter_token_latency_s)
+        self.assertIsNotNone(result.inter_chunk_latency_s)
+        self.assertTrue(result.stream_completed)
+        self.assertEqual(result.token_count_source, "estimated")
 
     def test_streaming_generation_can_capture_usage(self):
         client = OpenAIChatClient(
@@ -96,12 +108,35 @@ class ClientTest(unittest.TestCase):
         self.assertEqual(result.text, "hello world")
         self.assertEqual(result.prompt_tokens, 3)
         self.assertEqual(result.output_tokens, 2)
+        self.assertIsNotNone(result.time_per_output_token_s)
+        self.assertEqual(result.token_count_source, "api_usage")
 
     def test_loopback_detection_for_proxy_bypass(self):
         self.assertTrue(_is_loopback_url("http://127.0.0.1:8000/v1"))
         self.assertTrue(_is_loopback_url("http://localhost:8000/v1"))
         self.assertTrue(_is_loopback_url("http://[::1]:8000/v1"))
         self.assertFalse(_is_loopback_url("https://api.openai.example/v1"))
+
+    def test_incomplete_stream_fails_closed(self):
+        client = OpenAIChatClient(
+            ModelConfig(name="mock", base_url=self.base_url, model="mock-model")
+        )
+        result = client.generate("incomplete", stream=True)
+        self.assertFalse(result.ok)
+        self.assertFalse(result.stream_completed)
+        self.assertIn("missing [DONE]", result.error or "")
+
+    def test_sse_parser_assembles_multiline_data_and_ignores_comments(self):
+        response = io.BytesIO(
+            b": keepalive\n"
+            b"data: {\"choices\":\n"
+            b"data: []}\n\n"
+            b"data: [DONE]\n\n"
+        )
+        self.assertEqual(
+            list(_iter_sse_data(response)),
+            ['{"choices":\n[]}', "[DONE]"],
+        )
 
 
 if __name__ == "__main__":
