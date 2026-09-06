@@ -1,0 +1,191 @@
+{
+  "protocol_version": "qwen38-27b-bf16-fp8-pareto-paracloud-v1",
+  "created_at": "2026-09-06",
+  "frozen": true,
+  "status": "preregistered_runtime_blocked",
+  "objective": "Measure whether the official Qwen3.8-27B FP8 checkpoint preserves BF16 reasoning quality while improving matched-topology serving efficiency on RTX 4090 GPUs.",
+  "source_locks": {
+    "lm_eval": {
+      "repository": "https://github.com/EleutherAI/lm-evaluation-harness.git",
+      "commit": "b954108c9baaaa934b4ad842033b31a97ee30816"
+    },
+    "vllm": {
+      "version": "0.23.0",
+      "tag_commit": "0fc695fc6d1d82e9a5ac6835ac8e4e1c83703665"
+    }
+  },
+  "arms": {
+    "baseline": {
+      "model_id": "Qwen/Qwen3.8-27B",
+      "revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+      "precision": "BF16",
+      "runtime_relative_path": "models/qwen38-27b-bf16"
+    },
+    "candidate": {
+      "model_id": "Qwen/Qwen3.8-27B-FP8",
+      "revision": "017b9c7af6b5689d5dd426a76e0bc077eb5ca20a",
+      "precision": "FP8 W8A8",
+      "runtime_relative_path": "models/qwen38-27b-fp8"
+    }
+  },
+  "matched_topology": {
+    "partition": "gpu_4090",
+    "nodes": 1,
+    "gpus_per_node": 4,
+    "gpu_model": "NVIDIA GeForce RTX 4090",
+    "compute_capability": "8.9",
+    "tensor_parallel_size": 4,
+    "pipeline_parallel_size": 1,
+    "max_model_len": 32768,
+    "gpu_memory_utilization": 0.9,
+    "kv_cache_dtype": "auto",
+    "enforce_same_gpu_uuids_when_scheduled_together": true
+  },
+  "quality": {
+    "backend": "vllm-vlm",
+    "chat_template": "model tokenizer_config.json",
+    "enable_thinking": true,
+    "reasoning_effort": "xhigh",
+    "think_end_token": "</think>",
+    "temperature": 0.0,
+    "seed": "0,1234,1234,1234",
+    "batch_size": 1,
+    "standard_lane": {
+      "runner": "lm-evaluation-harness",
+      "tasks": [
+        {
+          "name": "gpqa_diamond_cot_zeroshot",
+          "execution_name": "qwen38_gpqa_diamond_cot_zeroshot_pinned",
+          "task_metadata_version": "2.2",
+          "dataset_id": "Idavidrein/gpqa",
+          "dataset_revision": "633f5ee89ab8ad4522a9f850766b73f62147ffdd",
+          "dataset_config": "gpqa_diamond",
+          "expected_split_rows": {"train": 198},
+          "primary_filter": "flexible-extract",
+          "primary_metric_key": "exact_match,flexible-extract",
+          "config_relative_path": "lm_eval/tasks/gpqa/cot_zeroshot/_gpqa_cot_zeroshot_yaml",
+          "task_config_relative_path": "lm_eval/tasks/gpqa/cot_zeroshot/gpqa_diamond_cot_zeroshot.yaml",
+          "split": "train exposed as validation by the upstream task",
+          "num_fewshot": 0
+        },
+        {
+          "name": "mmlu_pro",
+          "execution_name": "qwen38_mmlu_pro_pinned",
+          "task_metadata_version": "3.1",
+          "group_metadata_version": "2.0",
+          "dataset_id": "TIGER-Lab/MMLU-Pro",
+          "dataset_revision": "b189ec765aa7ed75c8acfea42df31fdae71f97be",
+          "dataset_config": null,
+          "expected_split_rows": {"test": 12032, "validation": 70},
+          "primary_filter": "custom-extract",
+          "primary_metric_key": "exact_match,custom-extract",
+          "config_relative_path": "lm_eval/tasks/mmlu_pro/_default_template_yaml",
+          "group_config_relative_path": "lm_eval/tasks/mmlu_pro/_mmlu_pro.yaml",
+          "subtasks": [
+            "biology",
+            "business",
+            "chemistry",
+            "computer_science",
+            "economics",
+            "engineering",
+            "health",
+            "history",
+            "law",
+            "math",
+            "other",
+            "philosophy",
+            "physics",
+            "psychology"
+          ],
+          "split": "test",
+          "num_fewshot": 5
+        }
+      ],
+      "requirements": [
+        "use the exact pinned lm-evaluation-harness commit",
+        "load GPQA and MMLU-Pro from the exact pinned dataset commits",
+        "apply the model chat template",
+        "retain upstream deterministic generation settings",
+        "log every sample and the resolved task configuration",
+        "run task integrity checks before inference",
+        "zero failed or missing samples in both arms"
+      ]
+    },
+    "robustness_lane": {
+      "task": "GPQA Diamond",
+      "runner_repository": "gpqa-8b-optimization-lab",
+      "permutations_per_question": 4,
+      "permutation_policy": "gold-blind balanced cyclic rotations",
+      "aggregation": "unique plurality; ties abstain",
+      "report": [
+        "canonical-order exact-match accuracy",
+        "four-permutation consistency",
+        "unique-plurality accuracy",
+        "tie/abstention rate",
+        "paired BF16-versus-FP8 question-level bootstrap interval"
+      ],
+      "claim_boundary": "This is a robustness diagnostic, not a standard GPQA leaderboard result. Raw licensed GPQA items must not be committed."
+    }
+  },
+  "performance": {
+    "run_only_after_quality_gate_passes": true,
+    "server": "vLLM OpenAI-compatible server",
+    "matched_shape": {
+      "average_input_tokens": 512,
+      "output_tokens": 256,
+      "ignore_eos": true,
+      "concurrencies": [1, 4, 8, 16],
+      "requests_per_condition": 80,
+      "repeats": 3
+    },
+    "primary_metrics": [
+      "successful request rate",
+      "aggregate output tokens per second",
+      "p50 and p95 time to first token",
+      "p50 and p95 time per output token",
+      "p50 and p95 request latency",
+      "peak allocated GPU memory",
+      "GPU board energy"
+    ],
+    "minimum_footprint_lane": {
+      "enabled_after_matched_topology_lane": true,
+      "claim_boundary": "Results with different GPU counts are capacity evidence only and must not be mixed into the matched-topology speedup claim."
+    }
+  },
+  "gates": {
+    "zero_failed_requests": true,
+    "minimum_quality_retention": 0.98,
+    "maximum_gpqa_absolute_drop_percentage_points": 2.0,
+    "maximum_mmlu_pro_absolute_drop_percentage_points": 1.0,
+    "maximum_gpqa_tie_rate_increase_percentage_points": 2.0,
+    "minimum_peak_gpu_memory_reduction_fraction": 0.35,
+    "minimum_output_throughput_increase_fraction": 0.2,
+    "alternative_minimum_same_slo_concurrency_increase_fraction": 0.25
+  },
+  "resource_preflight": {
+    "runtime_python_relative_path": "venv/bin/python",
+    "lm_eval_relative_path": "source/lm-evaluation-harness",
+    "minimum_free_disk_gib_before_staging": 160,
+    "minimum_free_disk_gib_for_execution": 32,
+    "model_ready_marker": ".READY",
+    "require_snapshot_manifest": true,
+    "require_per_file_sha256": true,
+    "dataset_cache_relative_path": "hf-datasets",
+    "dataset_receipt_relative_path": "data/qwen38-standard-datasets-receipt.json",
+    "dataset_ready_marker_relative_path": "data/qwen38-standard-datasets.READY",
+    "offline_compute_nodes": true
+  },
+  "execution_order": [
+    "validate protocol, source revisions, runtime version, disk, model receipts, and allocated GPUs",
+    "run one-item-per-task smoke evaluation for BF16",
+    "run one-item-per-task smoke evaluation for FP8",
+    "run full standard quality lane for BF16",
+    "run full standard quality lane for FP8",
+    "apply paired quality gates",
+    "run GPQA permutation robustness lane for both passing arms",
+    "run matched-topology serving benchmark only if all quality gates pass",
+    "optionally run the separately labeled minimum-footprint capacity lane"
+  ],
+  "freeze_policy": "Model revisions, harness commit, task versions, prompts, parsers, topology, seeds, and gates are frozen before any scored run. Any change creates a new protocol version; failed runs are retained and never silently replaced.",
+  "claim_boundary": "This experiment can support checkpoint-specific BF16-versus-FP8 retention and matched-topology serving claims. It does not reproduce Qwen's official 89.2 GPQA number unless its undisclosed full evaluation recipe is independently matched, and it does not justify claims about other hardware, runtimes, model revisions, or quantization formats."
+}

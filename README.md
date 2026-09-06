@@ -96,6 +96,12 @@ The practical interpretation is that single-L20 Qwen2.5-72B AWQ serving is feasi
 
 The 24h fixed-shape c10 soak test completed with GPU power logging and zero request failures. The follow-up plan for quality retention, additional 70B models, additional runtimes, and AWQ/GPTQ/FP8 ablations is tracked in [docs/research-experiment-plan.md](docs/research-experiment-plan.md).
 
+The next pre-registered experiment is an exact-revision Qwen3.8-27B BF16 vs
+official FP8 comparison on a matched 4x RTX 4090 topology. Its standard
+GPQA/MMLU-Pro lane, gold-blind GPQA permutation lane, quality-first gates, and
+remote staging blocker are documented in
+[docs/qwen38-27b-bf16-fp8-pareto-plan.md](docs/qwen38-27b-bf16-fp8-pareto-plan.md).
+
 ## Quality Evaluation Snapshot
 
 The first AWQ candidate quality pass completed on the same L20 setup. See [docs/l20-qwen72b-awq-quality-results.md](docs/l20-qwen72b-awq-quality-results.md) for run directories, commands, and caveats.
