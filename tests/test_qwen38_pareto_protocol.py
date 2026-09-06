@@ -92,6 +92,8 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
         for name in ("TRITON_CACHE_DIR", "TORCHINDUCTOR_CACHE_DIR", "VLLM_CACHE_ROOT", "CUDA_CACHE_PATH", "XDG_CACHE_HOME", "FLASHINFER_WORKSPACE_BASE"):
             self.assertRegex(environment, rf'export {name}="\$TMPDIR/[^"\n]+"')
         self.assertIn('[[ -x "$CUDA_HOME/bin/nvcc"', environment)
+        self.assertIn('$(dirname "$PY"):$CUDA_HOME/bin:$PATH', environment)
+        self.assertIn('command -v ninja', environment)
 
     def test_mutated_gate_is_rejected(self):
         self.protocol["gates"]["minimum_quality_retention"] = 0.9

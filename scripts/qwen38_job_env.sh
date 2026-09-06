@@ -14,6 +14,10 @@ CUDA_HOME=$("$PY" -c 'import sysconfig; print(sysconfig.get_path("purelib") + "/
   echo "Pinned CUDA compiler or headers are missing: $CUDA_HOME" >&2
   return 1
 }
-export PATH="$CUDA_HOME/bin:$PATH"
+export PATH="$(dirname "$PY"):$CUDA_HOME/bin:$PATH"
+command -v ninja >/dev/null || {
+  echo "ninja is missing from the pinned runtime" >&2
+  return 1
+}
 mkdir -p "$TRITON_CACHE_DIR" "$TORCHINDUCTOR_CACHE_DIR" \
   "$VLLM_CACHE_ROOT" "$CUDA_CACHE_PATH" "$XDG_CACHE_HOME" "$FLASHINFER_WORKSPACE_BASE"
