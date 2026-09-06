@@ -18,6 +18,7 @@ EXPECTED_PROTOCOL_VERSIONS = {
     "qwen38-27b-bf16-fp8-pareto-paracloud-v1",
     "qwen38-27b-bf16-fp8-pareto-paracloud-v2",
     "qwen38-27b-bf16-fp8-pareto-paracloud-v3",
+    "qwen38-27b-bf16-fp8-pareto-paracloud-v4",
 }
 EXPECTED_HARNESS_COMMIT = "b954108c9baaaa934b4ad842033b31a97ee30816"
 EXPECTED_VLLM_VERSION = "0.23.0"
@@ -139,11 +140,14 @@ def validate_static(protocol: dict[str, Any]) -> list[dict[str, Any]]:
     )
 
     quality = protocol.get("quality") or {}
-    if protocol.get("protocol_version", "").endswith("-v3"):
+    if protocol.get("protocol_version", "").endswith(("-v3", "-v4")):
         add_check(checks, "reasoning token budget",
                   quality.get("max_gen_toks") == 32768
                   and topology.get("max_model_len") == 65536,
                   "32768 output tokens within 65536 context")
+    if protocol.get("protocol_version", "").endswith("-v4"):
+        add_check(checks, "text backend forwards thinking parameters",
+                  quality.get("backend") == "vllm", str(quality.get("backend")))
     add_check(
         checks,
         "reasoning contract",

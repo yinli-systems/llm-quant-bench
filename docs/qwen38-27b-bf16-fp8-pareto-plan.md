@@ -1,6 +1,10 @@
 # Qwen3.8-27B BF16 vs FP8 Pareto experiment
 
-Active scoring protocol: **v3**, frozen before the first scored run. It gives
+Active scoring protocol: **v4**, frozen before the first scored run. The text
+`vllm` backend forwards explicit thinking/template arguments; the pinned
+`vllm-vlm` implementation instead calls its processor without these arguments.
+Both evaluation tasks are text-only. Version 4 retains the v3 token budget:
+it gives
 both arms 32,768 generation tokens within 65,536 context. Inspection of the
 pinned harness found GPQA otherwise defaults to 256 generation tokens and
 MMLU-Pro to 2,048, which can truncate the requested xhigh reasoning. CLI

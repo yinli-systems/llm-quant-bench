@@ -5,7 +5,7 @@ ROOT=${QWEN38_ROOT:-/ssd/scxi253/qwen38-27b-pareto-v2}
 RUNTIME_STAGING_PID=${RUNTIME_STAGING_PID:?Required live runtime staging PID}
 SRC="$ROOT/source/llm-quant-bench"
 PY="$ROOT/venv/bin/python"
-PROTOCOL="$SRC/protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v3.json"
+PROTOCOL="$SRC/protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v4.json"
 mkdir -p "$ROOT/logs"
 exec 9>"$ROOT/logs/smoke-dispatch.lock"
 flock -n 9 || exit 1
