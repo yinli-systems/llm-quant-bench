@@ -61,7 +61,11 @@ export VLLM_NO_USAGE_STATS=1
 export TMPDIR="/tmp/qwen38-$SLURM_JOB_ID"
 export TRITON_CACHE_DIR="$TMPDIR/triton"
 export TORCHINDUCTOR_CACHE_DIR="$TMPDIR/torchinductor"
-mkdir -p "$TRITON_CACHE_DIR" "$TORCHINDUCTOR_CACHE_DIR"
+export VLLM_CACHE_ROOT="$TMPDIR/vllm"
+export CUDA_CACHE_PATH="$TMPDIR/cuda"
+export XDG_CACHE_HOME="$TMPDIR/xdg-cache"
+mkdir -p "$TRITON_CACHE_DIR" "$TORCHINDUCTOR_CACHE_DIR" \
+  "$VLLM_CACHE_ROOT" "$CUDA_CACHE_PATH" "$XDG_CACHE_HOME"
 
 "$PY" "$SRC/scripts/validate_qwen38_pareto_protocol.py" \
   --protocol "$PROTOCOL" \

@@ -69,6 +69,27 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
         self.assertEqual(preflight["minimum_free_disk_gib_before_runtime_staging"], 48)
         self.assertEqual(preflight["minimum_free_disk_gib_for_execution"], 32)
 
+    def test_v4_preserves_text_backend_and_thinking_arguments(self):
+        protocol = json.loads((REPO_ROOT / "protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v4.json").read_text())
+        self.assertTrue(all(c["ok"] for c in validator.validate_static(protocol)))
+        command = runner.build_command(
+            protocol, model_path=pathlib.Path("/models/q38"), out=pathlib.Path("/runs/test"),
+            tasks=["gpqa_diamond_cot_zeroshot"], include_path=pathlib.Path("/overlays"),
+            execution_tasks=["qwen38_gpqa_diamond_cot_zeroshot_pinned"], limit=1,
+        )
+        self.assertEqual(command[command.index("--model") + 1], "vllm")
+        arguments = json.loads(command[command.index("--model_args") + 1])
+        self.assertTrue(arguments["enable_thinking"])
+        self.assertEqual(arguments["think_end_token"], "</think>")
+        self.assertEqual(arguments["chat_template_args"], {"reasoning_effort": "xhigh", "preserve_thinking": True})
+        protocol["quality"]["backend"] = "vllm-vlm"
+        self.assertFalse(all(c["ok"] for c in validator.validate_static(protocol)))
+
+    def test_slurm_caches_are_job_local(self):
+        script = (REPO_ROOT / "cluster/slurm/qwen38_27b_standard_quality_4x4090.sbatch").read_text()
+        for name in ("TRITON_CACHE_DIR", "TORCHINDUCTOR_CACHE_DIR", "VLLM_CACHE_ROOT", "CUDA_CACHE_PATH", "XDG_CACHE_HOME"):
+            self.assertRegex(script, rf'export {name}="\$TMPDIR/[^"\n]+"')
+
     def test_mutated_gate_is_rejected(self):
         self.protocol["gates"]["minimum_quality_retention"] = 0.9
         failures = [
