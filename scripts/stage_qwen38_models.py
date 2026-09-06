@@ -100,7 +100,12 @@ def main() -> int:
     preflight = protocol["resource_preflight"]
     disk_anchor = nearest_existing_parent(args.runtime_root)
     free_gib = shutil.disk_usage(disk_anchor).free / (1024**3)
-    minimum = float(preflight["minimum_free_disk_gib_before_staging"])
+    minimum = float(
+        preflight.get(
+            "minimum_free_disk_gib_before_model_staging",
+            preflight["minimum_free_disk_gib_before_staging"],
+        )
+    )
     if free_gib < minimum:
         raise SystemExit(f"insufficient disk before staging: {free_gib:.1f} GiB free; need {minimum:.1f} GiB")
 

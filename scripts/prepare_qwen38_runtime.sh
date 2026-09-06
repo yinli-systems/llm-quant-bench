@@ -1,13 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT=${QWEN38_ROOT:-/ssd/scxi253/qwen38-27b-pareto-v1}
+ROOT=${QWEN38_ROOT:-/ssd/scxi253/qwen38-27b-pareto-v2}
 BASE_PYTHON=${BASE_PYTHON:-/ssd/scxi253/biomm/miniconda3/bin/python}
+PROTOCOL=${QWEN38_PROTOCOL:-$ROOT/source/llm-quant-bench/protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v2.json}
 LMEVAL_COMMIT=b954108c9baaaa934b4ad842033b31a97ee30816
 VLLM_VERSION=0.23.0
-MINIMUM_FREE_GIB=160
 
 [[ -x "$BASE_PYTHON" ]]
+[[ -f "$PROTOCOL" ]]
+MINIMUM_FREE_GIB=$("$BASE_PYTHON" - "$PROTOCOL" <<'PY'
+import json
+import sys
+
+preflight = json.load(open(sys.argv[1], encoding="utf-8"))["resource_preflight"]
+print(preflight.get(
+    "minimum_free_disk_gib_before_runtime_staging",
+    preflight["minimum_free_disk_gib_before_staging"],
+))
+PY
+)
 disk_anchor="$ROOT"
 while [[ ! -e "$disk_anchor" && "$disk_anchor" != / ]]; do
   disk_anchor=$(dirname "$disk_anchor")
@@ -21,7 +33,7 @@ print((stats.f_bavail * stats.f_frsize) // (1024**3))
 PY
 )
 if (( free_gib < MINIMUM_FREE_GIB )); then
-  echo "insufficient disk before runtime/model staging: ${free_gib} GiB free; need ${MINIMUM_FREE_GIB} GiB" >&2
+  echo "insufficient disk before runtime staging: ${free_gib} GiB free; need ${MINIMUM_FREE_GIB} GiB" >&2
   exit 1
 fi
 

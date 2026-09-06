@@ -10,13 +10,13 @@
 
 set -euo pipefail
 
-ROOT=${QWEN38_ROOT:-/ssd/scxi253/qwen38-27b-pareto-v1}
+ROOT=${QWEN38_ROOT:-/ssd/scxi253/qwen38-27b-pareto-v2}
 ARM=${ARM:?Set ARM=baseline or ARM=candidate}
 MODE=${MODE:-smoke}
 SRC="$ROOT/source/llm-quant-bench"
 LMEVAL="$ROOT/source/lm-evaluation-harness"
 PY="$ROOT/venv/bin/python"
-PROTOCOL="$SRC/protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v1.json"
+PROTOCOL=${QWEN38_PROTOCOL:-$SRC/protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v2.json}
 
 case "$ARM" in
   baseline)

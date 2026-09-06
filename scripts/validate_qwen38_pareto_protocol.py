@@ -14,7 +14,10 @@ from pathlib import Path
 from typing import Any
 
 
-EXPECTED_PROTOCOL_VERSION = "qwen38-27b-bf16-fp8-pareto-paracloud-v1"
+EXPECTED_PROTOCOL_VERSIONS = {
+    "qwen38-27b-bf16-fp8-pareto-paracloud-v1",
+    "qwen38-27b-bf16-fp8-pareto-paracloud-v2",
+}
 EXPECTED_HARNESS_COMMIT = "b954108c9baaaa934b4ad842033b31a97ee30816"
 EXPECTED_VLLM_VERSION = "0.23.0"
 EXPECTED_TASKS = {
@@ -31,7 +34,8 @@ EXPECTED_DATASETS = {
         "b189ec765aa7ed75c8acfea42df31fdae71f97be",
     ),
 }
-MINIMUM_SAFE_DISK_GIB = 128
+MINIMUM_SAFE_MODEL_STAGING_DISK_GIB = 128
+MINIMUM_SAFE_RUNTIME_STAGING_DISK_GIB = 48
 HEX40_RE = re.compile(r"^[0-9a-f]{40}$")
 
 
@@ -59,7 +63,7 @@ def validate_static(protocol: dict[str, Any]) -> list[dict[str, Any]]:
     add_check(
         checks,
         "protocol version",
-        protocol.get("protocol_version") == EXPECTED_PROTOCOL_VERSION,
+        protocol.get("protocol_version") in EXPECTED_PROTOCOL_VERSIONS,
         str(protocol.get("protocol_version")),
     )
     add_check(checks, "protocol frozen", protocol.get("frozen") is True, str(protocol.get("frozen")))
@@ -170,13 +174,25 @@ def validate_static(protocol: dict[str, Any]) -> list[dict[str, Any]]:
     add_check(checks, "pre-registered acceptance gates", gates_ok, json.dumps(gates, sort_keys=True))
 
     preflight = protocol.get("resource_preflight") or {}
-    min_disk = preflight.get("minimum_free_disk_gib_before_staging", 0)
+    model_staging_disk = preflight.get(
+        "minimum_free_disk_gib_before_model_staging",
+        preflight.get("minimum_free_disk_gib_before_staging", 0),
+    )
+    runtime_staging_disk = preflight.get(
+        "minimum_free_disk_gib_before_runtime_staging",
+        preflight.get("minimum_free_disk_gib_before_staging", 0),
+    )
     execution_disk = preflight.get("minimum_free_disk_gib_for_execution", 0)
     add_check(
         checks,
         "safe disk floor",
-        min_disk >= MINIMUM_SAFE_DISK_GIB and execution_disk >= 32,
-        f"staging={min_disk} GiB, execution={execution_disk} GiB",
+        model_staging_disk >= MINIMUM_SAFE_MODEL_STAGING_DISK_GIB
+        and runtime_staging_disk >= MINIMUM_SAFE_RUNTIME_STAGING_DISK_GIB
+        and execution_disk >= 32,
+        (
+            f"model staging={model_staging_disk} GiB, "
+            f"runtime staging={runtime_staging_disk} GiB, execution={execution_disk} GiB"
+        ),
     )
     add_check(
         checks,
@@ -422,9 +438,11 @@ def validate_runtime(
     disk_gate = (
         "minimum_free_disk_gib_for_execution"
         if model_receipts_complete
-        else "minimum_free_disk_gib_before_staging"
+        else "minimum_free_disk_gib_before_model_staging"
     )
-    minimum = float(preflight[disk_gate])
+    minimum = float(
+        preflight.get(disk_gate, preflight["minimum_free_disk_gib_before_staging"])
+    )
     add_check(
         checks,
         "runtime free disk",

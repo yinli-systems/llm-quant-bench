@@ -7,6 +7,7 @@ import unittest
 
 REPO_ROOT = pathlib.Path(__file__).resolve().parents[1]
 PROTOCOL_PATH = REPO_ROOT / "protocols" / "qwen38_27b_bf16_fp8_pareto_paracloud_v1.json"
+PROTOCOL_V2_PATH = REPO_ROOT / "protocols" / "qwen38_27b_bf16_fp8_pareto_paracloud_v2.json"
 VALIDATOR_PATH = REPO_ROOT / "scripts" / "validate_qwen38_pareto_protocol.py"
 RUNNER_PATH = REPO_ROOT / "scripts" / "run_qwen38_standard_eval.py"
 STAGER_PATH = REPO_ROOT / "scripts" / "stage_qwen38_models.py"
@@ -34,6 +35,15 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
     def test_frozen_protocol_passes_static_validation(self):
         checks = validator.validate_static(self.protocol)
         self.assertTrue(all(check["ok"] for check in checks), checks)
+
+    def test_storage_recovery_protocol_passes_static_validation(self):
+        protocol = json.loads(PROTOCOL_V2_PATH.read_text(encoding="utf-8"))
+        checks = validator.validate_static(protocol)
+        self.assertTrue(all(check["ok"] for check in checks), checks)
+        preflight = protocol["resource_preflight"]
+        self.assertEqual(preflight["minimum_free_disk_gib_before_model_staging"], 128)
+        self.assertEqual(preflight["minimum_free_disk_gib_before_runtime_staging"], 48)
+        self.assertEqual(preflight["minimum_free_disk_gib_for_execution"], 32)
 
     def test_mutated_gate_is_rejected(self):
         self.protocol["gates"]["minimum_quality_retention"] = 0.9

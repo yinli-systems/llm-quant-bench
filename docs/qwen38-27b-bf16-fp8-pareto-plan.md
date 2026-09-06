@@ -1,11 +1,13 @@
 # Qwen3.8-27B BF16 vs FP8 Pareto experiment
 
-Status on 2026-09-06: the protocol and launch path are locally validated, but
-remote staging is blocked. The ParaCloud `/ssd` filesystem had about 28 GiB
-free during the preflight snapshot, below the frozen 160 GiB staging floor.
-The existing evidence environment has vLLM 0.8.5 and Transformers 4.51.3, so
-it is not reused for this newly released architecture. No shared data was
-deleted and no GPU job was submitted.
+Status on 2026-09-06: version 1 remains preserved as the original blocked
+preregistration. After explicit authorization, the reproducible old
+Qwen2.5-72B BF16 snapshot was removed while the old AWQ snapshot and all run
+evidence were preserved. Version 2 changes only storage sequencing: the two
+official model snapshots total 86,429,873,704 weight bytes, so it requires 128
+GiB before model staging, 48 GiB before runtime staging, and still reserves 32
+GiB for execution. Model, dataset, harness, runtime, topology, prompt, seed,
+and quality gates are unchanged.
 
 ## Why this experiment
 
@@ -51,8 +53,9 @@ concurrency 1/4/8/16, exact request accounting, and failure-complete latency
 and throughput summaries. A later minimum-GPU run is labeled capacity evidence
 and is not folded into the matched-topology speedup.
 
-The complete gates and immutable revisions are in
-`protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v1.json`.
+The active storage-recovery protocol is
+`protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v2.json`; version 1 remains an
+immutable record of the original blocked plan.
 
 ## Local validation
 
@@ -60,7 +63,7 @@ Validate the protocol against the exact harness checkout:
 
 ```bash
 python3 scripts/validate_qwen38_pareto_protocol.py \
-  --protocol protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v1.json \
+  --protocol protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v2.json \
   --lm-eval-root /path/to/lm-evaluation-harness
 ```
 
@@ -68,7 +71,7 @@ Inspect the exact command without loading a model:
 
 ```bash
 python3 scripts/run_qwen38_standard_eval.py \
-  --protocol protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v1.json \
+  --protocol protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v2.json \
   --lm-eval-root /path/to/lm-evaluation-harness \
   --arm baseline \
   --model-path /path/to/qwen38-27b-bf16 \
@@ -83,26 +86,29 @@ receipts.
 
 ## Remote staging and launch order
 
-Do not download, build the runtime, or submit a GPU job until the preflight has
-at least 160 GiB free. Reclaiming shared storage requires a separate inventory
-and an explicit decision about artifacts that are backed up and reproducible.
+Version 2 requires at least 128 GiB before downloading both exact model
+snapshots, at least 48 GiB before building the runtime, and at least 32 GiB
+after all immutable receipts exist. These are separate gates because the
+official pinned weight blobs total 86,429,873,704 bytes.
 
 After space is available:
 
-1. Create `/ssd/scxi253/qwen38-27b-pareto-v1` and a fresh environment with
-   `scripts/prepare_qwen38_runtime.sh`. It pins vLLM 0.23.0, records `pip
-   freeze`, and leaves the completed Qwen2.5 evidence environment untouched.
-2. Clone lm-evaluation-harness and detach exactly at the pinned commit.
-3. Download the two model snapshots at their pinned revisions on a networked
+1. Create `/ssd/scxi253/qwen38-27b-pareto-v2` and clone this repository at a
+   recorded clean commit.
+2. Download the two model snapshots at their pinned revisions on a networked
    login node with `scripts/stage_qwen38_models.py`. It hashes every downloaded
    file, records the exact repository and revision, and writes `.READY` only
-   after the manifest is complete. Then run `scripts/stage_qwen38_datasets.py`
+   after the manifest is complete.
+3. Build a fresh environment with `scripts/prepare_qwen38_runtime.sh`. It pins
+   vLLM 0.23.0, checks the post-model 48 GiB floor, records `pip freeze`, and
+   leaves the completed Qwen2.5 evidence environment untouched. Then run
+   `scripts/stage_qwen38_datasets.py`
    in the same networked environment to warm the exact dataset revisions and
    create fingerprints/content receipts. GPQA is gated on Hugging Face, so its
    terms must already be accepted and `HF_TOKEN` must be supplied through the
    environment; the token is never written to a command or receipt.
-4. Copy this repository at a recorded Git commit and run the static and runtime
-   preflight.
+4. Run the static and runtime preflight from the recorded clean repository
+   commit.
 5. Submit BF16 and FP8 smoke jobs (`MODE=smoke`). Each arm evaluates one item
    per task and exercises model load, chat templating, thinking stripping,
    parsing, and output receipts.
