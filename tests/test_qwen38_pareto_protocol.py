@@ -87,8 +87,11 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
 
     def test_slurm_caches_are_job_local(self):
         script = (REPO_ROOT / "cluster/slurm/qwen38_27b_standard_quality_4x4090.sbatch").read_text()
-        for name in ("TRITON_CACHE_DIR", "TORCHINDUCTOR_CACHE_DIR", "VLLM_CACHE_ROOT", "CUDA_CACHE_PATH", "XDG_CACHE_HOME"):
-            self.assertRegex(script, rf'export {name}="\$TMPDIR/[^"\n]+"')
+        self.assertIn('source "$SRC/scripts/qwen38_job_env.sh"', script)
+        environment = (REPO_ROOT / "scripts/qwen38_job_env.sh").read_text()
+        for name in ("TRITON_CACHE_DIR", "TORCHINDUCTOR_CACHE_DIR", "VLLM_CACHE_ROOT", "CUDA_CACHE_PATH", "XDG_CACHE_HOME", "FLASHINFER_WORKSPACE_BASE"):
+            self.assertRegex(environment, rf'export {name}="\$TMPDIR/[^"\n]+"')
+        self.assertIn('[[ -x "$CUDA_HOME/bin/nvcc"', environment)
 
     def test_mutated_gate_is_rejected(self):
         self.protocol["gates"]["minimum_quality_retention"] = 0.9
