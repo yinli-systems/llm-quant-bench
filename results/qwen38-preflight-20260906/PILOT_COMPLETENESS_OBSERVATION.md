@@ -27,3 +27,28 @@ Allow the current evaluation to retain its results, then inspect the raw
 affected response and aggregate all integrity/parse failures. Preserve the
 original score and failure classification; do not declare quality retention
 or start performance evaluation from this pilot.
+
+## 20:00 UTC observation: length-limit failures
+
+- Slurm remained RUNNING after 7h31m54s, with 665/1,229 baseline requests
+  recorded. FP8 had not started and no completion receipt existed yet.
+- Five requests reached the frozen 32,768-token generation limit:
+  zero-based request IDs `413`, `450`, `570`, `591`, and `652`.
+  Each reported `finish_reason="length"`, missing `</think>`, and roughly
+  613 seconds of generation time. The generation budget was not changed.
+- Twelve total responses lacked the thinking-end marker: the five truncated
+  responses plus seven responses that reported normal `stop` completion.
+  These counts overlap and must not be added as independent failures.
+- Instrumented calls totaled 1,398,219 output tokens and 26,222.74 seconds.
+  No traceback, CUDA OOM, Ninja failure or engine-initialization failure
+  was observed. A subsequent allocation-local check found one vLLM engine,
+  four tensor-parallel workers, and four RTX 4090s at 100% utilization,
+  with 22,167 MiB used on each device.
+- The length-limited responses are a new failure type beyond the earlier
+  missing-marker-only cases. Persisted raw answers are still needed to
+  distinguish prolonged reasoning, repetitive generation, or other causes;
+  a larger token budget is not assumed to be a valid repair.
+
+Continue retaining the current evaluation's artifacts for the final audit.
+No model, prompt, parser, generation budget, or completion gate was changed,
+and no additional GPU job was submitted.
