@@ -9,6 +9,10 @@ VLLM_VERSION=0.23.0
 
 [[ -x "$BASE_PYTHON" ]]
 [[ -f "$PROTOCOL" ]]
+# Reuse any fully downloaded wheels prefetched while model staging was active.
+if [[ -d "$ROOT/wheels" ]]; then
+  export PIP_FIND_LINKS="$ROOT/wheels"
+fi
 MINIMUM_FREE_GIB=$("$BASE_PYTHON" - "$PROTOCOL" <<'PY'
 import json
 import sys
