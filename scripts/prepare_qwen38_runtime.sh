@@ -47,7 +47,9 @@ if [[ ! -d "$LMEVAL/.git" ]]; then
   git clone https://github.com/EleutherAI/lm-evaluation-harness.git "$LMEVAL"
 fi
 [[ -z "$(git -C "$LMEVAL" status --porcelain)" ]]
-git -C "$LMEVAL" fetch --depth=1 origin "$LMEVAL_COMMIT"
+if ! git -C "$LMEVAL" cat-file -e "${LMEVAL_COMMIT}^{commit}" 2>/dev/null; then
+  git -C "$LMEVAL" fetch --depth=1 origin "$LMEVAL_COMMIT"
+fi
 git -C "$LMEVAL" checkout --detach "$LMEVAL_COMMIT"
 [[ "$(git -C "$LMEVAL" rev-parse HEAD)" == "$LMEVAL_COMMIT" ]]
 
