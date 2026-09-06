@@ -102,8 +102,7 @@ def build_command(
     }
     command = [
         sys.executable,
-        "-m",
-        "lm_eval",
+        str(REPO_ROOT / "scripts/qwen38_lmeval_entrypoint.py"),
         "run",
         "--model",
         quality["backend"],
@@ -305,6 +304,10 @@ def main() -> int:
     (args.out / "task_integrity.json").write_text(json.dumps(integrity, indent=2) + "\n")
 
     env = os.environ.copy()
+    telemetry_path = args.out / "generation_telemetry.jsonl"
+    if telemetry_path.exists():
+        raise SystemExit("refusing to append to an existing generation telemetry file")
+    env["QWEN38_GENERATION_TELEMETRY"] = str(telemetry_path.resolve())
     existing = env.get("PYTHONPATH")
     env["PYTHONPATH"] = str(args.lm_eval_root) + (os.pathsep + existing if existing else "")
     log_path = args.out / "lm_eval.log"
@@ -319,6 +322,16 @@ def main() -> int:
         )
     if result.returncode != 0:
         raise SystemExit(f"lm-eval failed with exit code {result.returncode}; see {log_path}")
+    telemetry = [json.loads(line) for line in telemetry_path.read_text().splitlines() if line.strip()]
+    completion_check = {
+        "requests": len(telemetry),
+        "length_limited": sum(row["finish_reason"] == "length" for row in telemetry),
+        "unclosed_thinking": sum(not row["thinking_closed"] for row in telemetry),
+        "output_tokens": sum(row["output_tokens"] for row in telemetry),
+    }
+    (args.out / "completion_check.json").write_text(json.dumps(completion_check, indent=2) + "\n")
+    if not telemetry or completion_check["length_limited"] or completion_check["unclosed_thinking"]:
+        raise SystemExit("generation completeness gate failed; results and telemetry retained")
     return 0
 
 
