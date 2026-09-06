@@ -26,3 +26,13 @@ command -v ninja >/dev/null || {
 }
 mkdir -p "$TRITON_CACHE_DIR" "$TORCHINDUCTOR_CACHE_DIR" \
   "$VLLM_CACHE_ROOT" "$CUDA_CACHE_PATH" "$XDG_CACHE_HOME" "$FLASHINFER_WORKSPACE_BASE"
+# NVIDIA wheels provide lib/libcudart.so.13 without the development linker
+# name expected by FlashInfer. Keep the compatibility link on job scratch.
+[[ -f "$CUDA_HOME/lib/libcudart.so.13" ]] || return 1
+mkdir -p "$TMPDIR/cuda-link"
+if [[ ! -e "$TMPDIR/cuda-link/libcudart.so" && ! -L "$TMPDIR/cuda-link/libcudart.so" ]]; then
+  ln -s "$CUDA_HOME/lib/libcudart.so.13" "$TMPDIR/cuda-link/libcudart.so"
+fi
+[[ "$(readlink "$TMPDIR/cuda-link/libcudart.so")" == "$CUDA_HOME/lib/libcudart.so.13" ]] || return 1
+export LIBRARY_PATH="$TMPDIR/cuda-link${LIBRARY_PATH:+:$LIBRARY_PATH}"
+export LD_LIBRARY_PATH="$CUDA_HOME/lib${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"

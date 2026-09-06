@@ -14,6 +14,7 @@ budget). The earlier `VALIDATION.md` records the historical v3 CPU preflight.
 | 1560956 | Isolated one-GPU FlashInfer sampler | Failed after 19s; `ninja` was installed but missing from PATH. |
 | 1560962 | Repeat sampler with corrected PATH | Reached compilation; CUDA compiler and toolkit header versions disagreed. |
 | 1560981 | Isolated matching CUDA 13.0 compiler | Version mismatch resolved; failed after 36s because the minimal toolchain lacked cuRAND headers. |
+| 1560994 | Complete compiler and headers | All three CUDA translation units compiled; failed after 2m01s linking `-lcudart`, because NVIDIA wheels omit the unversioned development linker name. |
 
 BF16 job 1560916 did verify all 18 checkpoint shards could be loaded by
 vLLM 0.23.0 on TP4. Rank 0 logged 13.11 GiB model-loading memory and 56.06s
@@ -36,6 +37,9 @@ and must not be reported as peak serving footprint or inference throughput.
 - Redirected vLLM, Triton, TorchInductor, CUDA and FlashInfer caches to
   job-specific scratch. The original vLLM default used the account's 1 GiB
   home filesystem; this was a separate risk, not the observed failure cause.
+- Added a job-local `libcudart.so` link to the exact toolchain's
+  `lib/libcudart.so.13`, with explicit compiler and runtime library search paths.
+  This does not modify the installed toolkit or its content receipt.
 - All failed logs and run receipts are retained on the cluster. No checkpoint,
   dataset, existing result, or unrelated running job was removed by recovery.
 

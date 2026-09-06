@@ -94,6 +94,8 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
         self.assertIn('[[ -x "$CUDA_HOME/bin/nvcc"', environment)
         self.assertIn('$(dirname "$PY"):$CUDA_HOME/bin:$PATH', environment)
         self.assertIn('command -v ninja', environment)
+        self.assertIn('export LIBRARY_PATH="$TMPDIR/cuda-link', environment)
+        self.assertIn('ln -s "$CUDA_HOME/lib/libcudart.so.13"', environment)
 
     def test_mutated_gate_is_rejected(self):
         self.protocol["gates"]["minimum_quality_retention"] = 0.9
