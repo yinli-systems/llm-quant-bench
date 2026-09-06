@@ -16,7 +16,7 @@ MODE=${MODE:-smoke}
 SRC="$ROOT/source/llm-quant-bench"
 LMEVAL="$ROOT/source/lm-evaluation-harness"
 PY="$ROOT/venv/bin/python"
-PROTOCOL=${QWEN38_PROTOCOL:-$SRC/protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v2.json}
+PROTOCOL=${QWEN38_PROTOCOL:-$SRC/protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v3.json}
 
 case "$ARM" in
   baseline)

@@ -1,5 +1,13 @@
 # Qwen3.8-27B BF16 vs FP8 Pareto experiment
 
+Active scoring protocol: **v3**, frozen before the first scored run. It gives
+both arms 32,768 generation tokens within 65,536 context. Inspection of the
+pinned harness found GPQA otherwise defaults to 256 generation tokens and
+MMLU-Pro to 2,048, which can truncate the requested xhigh reasoning. CLI
+generation overrides apply the same explicit budget to both tasks and arms;
+all upstream prompts, parsers, and deterministic sampling settings remain.
+Versions 1 and 2 below preserve the planning and storage history.
+
 Status on 2026-09-06: version 1 remains preserved as the original blocked
 preregistration. After explicit authorization, the reproducible old
 Qwen2.5-72B BF16 snapshot was removed while the old AWQ snapshot and all run

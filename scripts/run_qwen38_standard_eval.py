@@ -124,6 +124,8 @@ def build_command(
         "--include_path",
         str(include_path),
     ]
+    if "max_gen_toks" in quality:
+        command.extend(["--gen_kwargs", json.dumps({"max_gen_toks": quality["max_gen_toks"]})])
     if limit is not None:
         command.extend(["--limit", str(limit)])
     return command

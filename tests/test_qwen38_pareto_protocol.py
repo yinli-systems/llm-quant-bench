@@ -48,6 +48,18 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
                     gpqa_csv=csv,
                 )
 
+    def test_v3_reasoning_budget_is_enforced_and_passed_to_harness(self):
+        protocol = json.loads((REPO_ROOT / "protocols/qwen38_27b_bf16_fp8_pareto_paracloud_v3.json").read_text())
+        self.assertTrue(all(c["ok"] for c in validator.validate_static(protocol)))
+        command = runner.build_command(
+            protocol, model_path=pathlib.Path("/models/q38"), out=pathlib.Path("/runs/test"),
+            tasks=["gpqa_diamond_cot_zeroshot"], include_path=pathlib.Path("/overlays"),
+            execution_tasks=["qwen38_gpqa_diamond_cot_zeroshot_pinned"], limit=1,
+        )
+        self.assertEqual(json.loads(command[command.index("--gen_kwargs") + 1]), {"max_gen_toks": 32768})
+        protocol["quality"]["max_gen_toks"] = 256
+        self.assertFalse(all(c["ok"] for c in validator.validate_static(protocol)))
+
     def test_storage_recovery_protocol_passes_static_validation(self):
         protocol = json.loads(PROTOCOL_V2_PATH.read_text(encoding="utf-8"))
         checks = validator.validate_static(protocol)
