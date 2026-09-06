@@ -1,0 +1,14 @@
+{
+  "status": "passed",
+  "test": "flashinfer_jit_sampling",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "torch": "2.11.0+cu130",
+  "torch_cuda": "13.0",
+  "flashinfer": "0.6.12",
+  "cuda_home": "/ssd/scxi253/qwen38-27b-pareto-v2/cuda-toolchain-13.0-r2/nvidia/cu13",
+  "sampled": [
+    7,
+    42
+  ],
+  "nvcc": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2025 NVIDIA Corporation\nBuilt on Wed_Aug_20_01:58:59_PM_PDT_2025\nCuda compilation tools, release 13.0, V13.0.88\nBuild cuda_13.0.r13.0/compiler.36424714_0\n"
+}

@@ -47,5 +47,11 @@ and must not be reported as peak serving footprint or inference throughput.
 The isolated sampler gate passed under source `62ff725`, torch `2.11.0+cu130`,
 FlashInfer `0.6.12`, and nvcc `13.0.88`. Raw output is retained at
 `/ssd/scxi253/qwen38-27b-pareto-v2/logs/cuda-smoke-1561008.out`.
-The full BF16/FP8 smoke pair can now restart. Formal quality and performance
-conclusions remain gated on subsequent complete model runs.
+The raw JSON is also archived alongside this report as
+`cuda-smoke-1561008.json`, SHA-256
+`5feae4272519359130d6516bb7830f9fb5690b7cfeb6ad8f2875cc7cec2b5d28`.
+The four-GPU model smoke pair was restarted under source `62ff725`:
+BF16 `1561019`, FP8 `1561020` with an `afterok` dependency on BF16.
+At the recorded observation BF16 was initializing and FP8 had not started.
+Formal quality and performance conclusions remain gated on subsequent
+complete model runs.
