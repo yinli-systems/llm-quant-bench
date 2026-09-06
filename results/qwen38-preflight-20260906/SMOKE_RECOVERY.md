@@ -15,6 +15,7 @@ budget). The earlier `VALIDATION.md` records the historical v3 CPU preflight.
 | 1560962 | Repeat sampler with corrected PATH | Reached compilation; CUDA compiler and toolkit header versions disagreed. |
 | 1560981 | Isolated matching CUDA 13.0 compiler | Version mismatch resolved; failed after 36s because the minimal toolchain lacked cuRAND headers. |
 | 1560994 | Complete compiler and headers | All three CUDA translation units compiled; failed after 2m01s linking `-lcudart`, because NVIDIA wheels omit the unversioned development linker name. |
+| 1561008 | Complete toolchain and job-local linker compatibility | **Passed** on RTX 4090 after 2m03s, exit 0. Real FlashInfer JIT sampling returned expected token IDs `[7, 42]`. |
 
 BF16 job 1560916 did verify all 18 checkpoint shards could be loaded by
 vLLM 0.23.0 on TP4. Rank 0 logged 13.11 GiB model-loading memory and 56.06s
@@ -43,6 +44,8 @@ and must not be reported as peak serving footprint or inference throughput.
 - All failed logs and run receipts are retained on the cluster. No checkpoint,
   dataset, existing result, or unrelated running job was removed by recovery.
 
-The isolated sampler must compile and return the expected two token IDs on
-an RTX 4090 before restarting the full BF16/FP8 smoke pair. Formal quality
-and performance conclusions remain gated on subsequent complete runs.
+The isolated sampler gate passed under source `62ff725`, torch `2.11.0+cu130`,
+FlashInfer `0.6.12`, and nvcc `13.0.88`. Raw output is retained at
+`/ssd/scxi253/qwen38-27b-pareto-v2/logs/cuda-smoke-1561008.out`.
+The full BF16/FP8 smoke pair can now restart. Formal quality and performance
+conclusions remain gated on subsequent complete model runs.
