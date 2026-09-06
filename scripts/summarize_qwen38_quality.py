@@ -59,6 +59,10 @@ def load_run_receipt(run_dir: Path, expected_arm: str, protocol_sha256: str) -> 
         "evaluation_source_revision"
     ):
         raise ValueError(f"uncommitted or unknown evaluation source in {run_dir}")
+    completion = json.loads((run_dir / "completion_check.json").read_text(encoding="utf-8"))
+    if (completion.get("requests") != 12230 or completion.get("length_limited") != 0
+            or completion.get("unclosed_thinking") != 0):
+        raise ValueError(f"incomplete generation evidence in {run_dir}: {completion}")
     return receipt
 
 
