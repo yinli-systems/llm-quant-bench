@@ -11,6 +11,12 @@ while [[ ! -f "$ROOT/models/qwen38-27b-bf16/.READY" || ! -f "$ROOT/models/qwen38
   fi
   sleep 20
 done
+if [[ -n "${VLLM_INSTALL_PID:-}" ]]; then
+  while kill -0 "$VLLM_INSTALL_PID" 2>/dev/null; do
+    sleep 20
+  done
+  "$ROOT/venv/bin/python" -c 'import importlib.metadata as m; assert m.version("vllm") == "0.23.0"'
+fi
 echo 'Both model receipts completed; preparing runtime'
 export PIP_NO_CACHE_DIR=1
 export QWEN38_ROOT="$ROOT"
