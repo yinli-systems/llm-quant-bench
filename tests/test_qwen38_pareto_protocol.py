@@ -191,7 +191,7 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
         self.assertEqual(model_args["tensor_parallel_size"], 4)
         self.assertTrue(model_args["enable_thinking"])
         self.assertEqual(model_args["chat_template_args"]["reasoning_effort"], "xhigh")
-        self.assertIn("--check_integrity", command)
+        self.assertNotIn("--check_integrity", command)
         self.assertIn("--log_samples", command)
         self.assertIn("--include_path", command)
 

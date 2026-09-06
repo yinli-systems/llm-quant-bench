@@ -8,6 +8,13 @@ generation overrides apply the same explicit budget to both tasks and arms;
 all upstream prompts, parsers, and deterministic sampling settings remain.
 Versions 1 and 2 below preserve the planning and storage history.
 
+Task integrity is checked by loading the actual pinned overlays, reconciling
+198 GPQA documents and all 14 MMLU-Pro subjects (12,032 documents), and checking
+prompt/target construction before model initialization. The upstream
+`--check_integrity` switch points to `tests/test_version_stable.py`, which is
+absent at the pinned harness commit, so this experiment does not invoke that
+broken switch. The resulting `task_integrity.json` is archived with each run.
+
 Status on 2026-09-06: version 1 remains preserved as the original blocked
 preregistration. After explicit authorization, the reproducible old
 Qwen2.5-72B BF16 snapshot was removed while the old AWQ snapshot and all run

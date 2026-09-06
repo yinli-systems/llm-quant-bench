@@ -55,7 +55,7 @@ fi
 "$PY" -m pip install "vllm==$VLLM_VERSION"
 "$PY" -m pip install -e "${LMEVAL}[vllm]"
 "$PY" -m pip check
-"$PY" -c 'import datasets, lm_eval, ray, transformers, vllm'
+"$PY" -c 'import datasets, lm_eval, transformers, vllm'
 "$PY" - "$ROOT" "$LMEVAL_COMMIT" "$VLLM_VERSION" <<'PY'
 import hashlib
 import importlib.metadata

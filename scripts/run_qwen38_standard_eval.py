@@ -116,7 +116,6 @@ def build_command(
         "--seed",
         quality["seed"],
         "--apply_chat_template",
-        "--check_integrity",
         "--show_config",
         "--log_samples",
         "--output_path",
@@ -133,6 +132,35 @@ def build_command(
 
 def yaml_string(value: str | Path) -> str:
     return json.dumps(str(value))
+
+
+def validate_task_loading(include_path: Path, execution_tasks: list[str]) -> dict[str, Any]:
+    """Load the actual overlays and validate complete document coverage before GPU initialization."""
+    import random
+    import numpy as np
+    from lm_eval.tasks import TaskManager
+
+    random.seed(1234)
+    np.random.seed(1234)
+    loaded = TaskManager(include_path=str(include_path)).load(execution_tasks)
+    rows = {}
+    for name, task in loaded["tasks"].items():
+        docs = task.eval_docs
+        if len(docs) == 0:
+            raise ValueError(f"empty evaluation task: {name}")
+        for index in (0, len(docs) - 1):
+            prompt, target = task.doc_to_text(docs[index]), task.doc_to_target(docs[index])
+            if not isinstance(prompt, str) or not prompt or target is None:
+                raise ValueError(f"invalid prompt/target in {name} at {index}")
+        rows[name] = len(docs)
+    if "qwen38_gpqa_diamond_cot_zeroshot_pinned" in execution_tasks:
+        if rows.get("qwen38_gpqa_diamond_cot_zeroshot_pinned") != 198:
+            raise ValueError("GPQA task coverage mismatch")
+    if "qwen38_mmlu_pro_pinned" in execution_tasks:
+        mmlu = {name: count for name, count in rows.items() if name.startswith("qwen38_mmlu_pro_")}
+        if len(mmlu) != 14 or sum(mmlu.values()) != 12032:
+            raise ValueError("MMLU-Pro task coverage mismatch")
+    return {"status": "passed", "task_rows": rows}
 
 
 def prepare_task_overlays(
@@ -272,6 +300,9 @@ def main() -> int:
     print(json.dumps(receipt, indent=2))
     if args.dry_run:
         return 0
+
+    integrity = validate_task_loading(include_path, execution_tasks)
+    (args.out / "task_integrity.json").write_text(json.dumps(integrity, indent=2) + "\n")
 
     env = os.environ.copy()
     existing = env.get("PYTHONPATH")
