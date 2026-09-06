@@ -52,6 +52,24 @@ The raw JSON is also archived alongside this report as
 `5feae4272519359130d6516bb7830f9fb5690b7cfeb6ad8f2875cc7cec2b5d28`.
 The four-GPU model smoke pair was restarted under source `62ff725`:
 BF16 `1561019`, FP8 `1561020` with an `afterok` dependency on BF16.
-At the recorded observation BF16 was initializing and FP8 had not started.
-Formal quality and performance conclusions remain gated on subsequent
-complete model runs.
+Both model jobs completed with exit 0: BF16 in 17m44s, FP8 in 17m51s.
+Each produced 15 scored samples, with zero length-limited completions and
+zero unclosed thinking sections. Both run SHA256SUMS archives verified.
+BF16 generated 9,228 tokens in 186.65s of instrumented generation calls;
+FP8 generated 10,172 tokens in 225.67s. These include different output
+lengths and cold JIT effects and are **not a matched-shape speed benchmark**.
+
+All paired document, target and prompt hashes match. MMLU-Pro scored 11/14
+in each arm, with identical parsed answer letters. The single GPQA response
+was `[invalid]` under the frozen upstream parser in both arms: each used a
+LaTeX boxed answer, which the upstream extraction rule did not recognize.
+The original GPQA score remains 0/1 in each arm; no post-hoc score correction
+was applied. These 15 development samples establish pipeline execution,
+not general quality retention or formal GPQA accuracy.
+
+The two jobs used the same node but only three of four GPU UUIDs matched.
+Added a sequential, single-allocation 10% pilot wrapper so both future arms
+use the same four devices. The pilot covers 1,229 samples per arm (20 GPQA
+and 1,209 MMLU-Pro) and retains the original v4 prompts and scoring rules.
+Parsing failure rates must be reported separately; pilot/full runs are not
+to be presented as an official Qwen score reproduction.
