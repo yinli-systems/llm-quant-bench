@@ -73,3 +73,11 @@ use the same four devices. The pilot covers 1,229 samples per arm (20 GPQA
 and 1,209 MMLU-Pro) and retains the original v4 prompts and scoring rules.
 Parsing failure rates must be reported separately; pilot/full runs are not
 to be presented as an official Qwen score reproduction.
+
+Pilot pair job `1561180` was submitted from source `2c0f118` and observed
+RUNNING on `wqd10nba06g8` with four RTX 4090s. Its paired outputs are under
+`runs/standard-quality/{baseline,candidate}/pilot/job-1561180` at the same
+remote root. A thread heartbeat checks every 15 minutes, with notifications
+reserved for meaningful changes, completion, failures or required decisions.
+The first 15 samples imply roughly 9–12 hours for both pilot arms together;
+this is a rough extrapolation, not a guaranteed completion time.
