@@ -85,6 +85,7 @@ git -C "$SRC" rev-parse HEAD > "$RUN/source_revision.txt"
   --lm-eval-root "$LMEVAL" \
   --arm "$ARM" \
   --model-path "$MODEL" \
+  --gpqa-csv "$ROOT/data/gpqa_diamond.csv" \
   --out "$RUN/eval" \
   "${LIMIT_ARGS[@]}"
 

@@ -36,6 +36,18 @@ class Qwen38ParetoProtocolTest(unittest.TestCase):
         checks = validator.validate_static(self.protocol)
         self.assertTrue(all(check["ok"] for check in checks), checks)
 
+    def test_local_gpqa_rejects_unverified_content(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            csv = pathlib.Path(temp_dir) / "gpqa.csv"
+            csv.write_text("Question,Correct Answer\nexample,A\n")
+            self.assertFalse(validator.validate_gpqa_csv(csv))
+            with self.assertRaisesRegex(ValueError, "pinned upstream content"):
+                runner.prepare_task_overlays(
+                    self.protocol, lm_eval_root=pathlib.Path("/pinned/lm-eval"),
+                    out=pathlib.Path(temp_dir), tasks=["gpqa_diamond_cot_zeroshot"],
+                    gpqa_csv=csv,
+                )
+
     def test_storage_recovery_protocol_passes_static_validation(self):
         protocol = json.loads(PROTOCOL_V2_PATH.read_text(encoding="utf-8"))
         checks = validator.validate_static(protocol)

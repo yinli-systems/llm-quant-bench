@@ -21,6 +21,7 @@ from scripts.validate_qwen38_pareto_protocol import (  # noqa: E402
     load_protocol,
     validate_lm_eval,
     validate_static,
+    validate_gpqa_csv,
 )
 
 
@@ -34,6 +35,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tasks", nargs="+", default=["gpqa_diamond_cot_zeroshot", "mmlu_pro"])
     parser.add_argument("--limit", type=float)
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--gpqa-csv", type=Path)
     return parser.parse_args()
 
 
@@ -137,6 +139,7 @@ def prepare_task_overlays(
     lm_eval_root: Path,
     out: Path,
     tasks: list[str],
+    gpqa_csv: Path | None = None,
 ) -> tuple[Path, list[str]]:
     """Create thin task overlays that pin datasets without copying task logic."""
     overlay_root = out / "task_overrides"
@@ -154,6 +157,18 @@ def prepare_task_overlays(
                 "dataset_kwargs:\n"
                 f"  revision: {yaml_string(spec['dataset_revision'])}\n"
             )
+            if gpqa_csv is not None:
+                if not validate_gpqa_csv(gpqa_csv):
+                    raise ValueError("GPQA CSV does not match pinned upstream content")
+                content = (
+                    f"include: {yaml_string(source)}\n"
+                    f"task: {yaml_string(spec['execution_name'])}\n"
+                    "dataset_path: csv\n"
+                    "dataset_name: gpqa_diamond\n"
+                    "dataset_kwargs:\n"
+                    "  data_files:\n"
+                    f"    train: {yaml_string(gpqa_csv.resolve())}\n"
+                )
             (overlay_root / "gpqa_diamond_pinned.yaml").write_text(content, encoding="utf-8")
             execution_tasks.append(spec["execution_name"])
             continue
@@ -219,6 +234,7 @@ def main() -> int:
         lm_eval_root=args.lm_eval_root,
         out=args.out,
         tasks=args.tasks,
+        gpqa_csv=args.gpqa_csv,
     )
     command = build_command(
         protocol,

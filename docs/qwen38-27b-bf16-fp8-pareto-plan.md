@@ -107,6 +107,14 @@ After space is available:
    create fingerprints/content receipts. GPQA is gated on Hugging Face, so its
    terms must already be accepted and `HF_TOKEN` must be supplied through the
    environment; the token is never written to a command or receipt.
+   Alternatively, `--gpqa-csv /path/to/existing/gpqa_diamond.csv` reuses the
+   previously downloaded file only when its Git blob is
+   `7589e3e467d69a1dceb126a60c4108d6d4f1d166`, as listed in the official tree
+   of the pinned dataset revision, and its SHA-256 is
+   `41d1213cd7a4998605a26c2798500652572007161b3a92817ba46b35befcd305`.
+   This transport fallback uses the same CSV dataset builder and preserves
+   upstream question processing, prompts, and filters. Its local source is
+   recorded in the dataset receipt and revalidated before evaluation.
 4. Run the static and runtime preflight from the recorded clean repository
    commit.
 5. Submit BF16 and FP8 smoke jobs (`MODE=smoke`). Each arm evaluates one item

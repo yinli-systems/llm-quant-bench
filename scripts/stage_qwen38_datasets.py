@@ -7,6 +7,7 @@ import argparse
 import hashlib
 import json
 import os
+import shutil
 import sys
 from pathlib import Path
 from typing import Any
@@ -21,6 +22,7 @@ from scripts.validate_qwen38_pareto_protocol import (  # noqa: E402
     sha256,
     validate_dataset_receipt,
     validate_static,
+    validate_gpqa_csv,
 )
 
 
@@ -28,6 +30,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--protocol", required=True, type=Path)
     parser.add_argument("--runtime-root", required=True, type=Path)
+    parser.add_argument("--gpqa-csv", type=Path, help="Reuse an existing copy of the exact pinned GPQA CSV")
     return parser.parse_args()
 
 
@@ -75,6 +78,16 @@ def main() -> int:
         raise SystemExit("datasets and huggingface_hub are required for dataset staging") from exc
     receipts = []
     load_specs = []
+    gpqa_csv = None
+    if args.gpqa_csv:
+        if not validate_gpqa_csv(args.gpqa_csv):
+            raise SystemExit("GPQA CSV does not match the pinned upstream Git blob and SHA-256")
+        gpqa_csv = args.runtime_root / "data/gpqa_diamond.csv"
+        gpqa_csv.parent.mkdir(parents=True, exist_ok=True)
+        if gpqa_csv.exists() and not validate_gpqa_csv(gpqa_csv):
+            raise SystemExit("refusing to overwrite a different local GPQA CSV")
+        if args.gpqa_csv.resolve() != gpqa_csv.resolve():
+            shutil.copyfile(args.gpqa_csv, gpqa_csv)
     for task in protocol["quality"]["standard_lane"]["tasks"]:
         kwargs: dict[str, Any] = {
             "path": task["dataset_id"],
@@ -83,6 +96,12 @@ def main() -> int:
         }
         if task.get("dataset_config"):
             kwargs["name"] = task["dataset_config"]
+        if task["name"] == "gpqa_diamond_cot_zeroshot" and gpqa_csv:
+            kwargs = {
+                "path": "csv", "name": "gpqa_diamond",
+                "data_files": {"train": str(gpqa_csv.resolve())},
+                "cache_dir": str(cache_dir),
+            }
         load_specs.append((task, kwargs))
         try:
             dataset = datasets.load_dataset(**kwargs)
@@ -137,6 +156,8 @@ def main() -> int:
         "offline_reload_verified": True,
         "datasets": receipts,
     }
+    if gpqa_csv:
+        receipt["local_gpqa_csv"] = str(gpqa_csv.relative_to(args.runtime_root))
     receipt_path = args.runtime_root / preflight["dataset_receipt_relative_path"]
     receipt_path.parent.mkdir(parents=True, exist_ok=True)
     receipt_bytes = (json.dumps(receipt, indent=2) + "\n").encode()

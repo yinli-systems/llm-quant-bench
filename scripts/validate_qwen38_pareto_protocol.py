@@ -37,6 +37,17 @@ EXPECTED_DATASETS = {
 MINIMUM_SAFE_MODEL_STAGING_DISK_GIB = 128
 MINIMUM_SAFE_RUNTIME_STAGING_DISK_GIB = 48
 HEX40_RE = re.compile(r"^[0-9a-f]{40}$")
+GPQA_CSV_SHA256 = "41d1213cd7a4998605a26c2798500652572007161b3a92817ba46b35befcd305"
+GPQA_CSV_GIT_BLOB = "7589e3e467d69a1dceb126a60c4108d6d4f1d166"
+
+
+def validate_gpqa_csv(path: Path) -> bool:
+    """Bind the previously downloaded CSV to the pinned upstream Git blob."""
+    if not path.is_file():
+        return False
+    content = path.read_bytes()
+    git_blob = hashlib.sha1(f"blob {len(content)}\0".encode() + content).hexdigest()
+    return git_blob == GPQA_CSV_GIT_BLOB and hashlib.sha256(content).hexdigest() == GPQA_CSV_SHA256
 
 
 def parse_args() -> argparse.Namespace:
@@ -345,6 +356,11 @@ def validate_dataset_receipt(
         return False, "dataset receipt protocol mismatch"
     if receipt.get("offline_reload_verified") is not True:
         return False, "dataset cache was not verified offline"
+    local_gpqa = receipt.get("local_gpqa_csv")
+    if local_gpqa is not None:
+        relative = Path(local_gpqa)
+        if relative.is_absolute() or ".." in relative.parts or not validate_gpqa_csv(root / relative):
+            return False, "local GPQA CSV does not match pinned upstream content"
 
     expected = {
         task["name"]: task for task in protocol["quality"]["standard_lane"]["tasks"]
