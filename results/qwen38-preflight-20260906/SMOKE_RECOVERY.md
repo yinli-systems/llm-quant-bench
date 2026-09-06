@@ -13,6 +13,7 @@ budget). The earlier `VALIDATION.md` records the historical v3 CPU preflight.
 | 1560917 | FP8 after successful BF16 | Never started; dependency became unsatisfiable. Canceled only this queued job. |
 | 1560956 | Isolated one-GPU FlashInfer sampler | Failed after 19s; `ninja` was installed but missing from PATH. |
 | 1560962 | Repeat sampler with corrected PATH | Reached compilation; CUDA compiler and toolkit header versions disagreed. |
+| 1560981 | Isolated matching CUDA 13.0 compiler | Version mismatch resolved; failed after 36s because the minimal toolchain lacked cuRAND headers. |
 
 BF16 job 1560916 did verify all 18 checkpoint shards could be loaded by
 vLLM 0.23.0 on TP4. Rank 0 logged 13.11 GiB model-loading memory and 56.06s
@@ -27,8 +28,9 @@ and must not be reported as peak serving footprint or inference throughput.
   alongside CUDA runtime 13.0.96. `pip check` did not detect this because the
   compiler's dependencies have no version constraints. The actual FlashInfer
   JIT rejected the compiler/header mismatch.
-- Added an isolated `cuda-toolchain-13.0` installation with nvcc/CRT/NVVM
-  13.0.88 and runtime 13.0.96. These component pins match the existing NVIDIA
+- Added an isolated `cuda-toolchain-13.0-r2` installation with nvcc/CRT/NVVM
+  13.0.88, runtime 13.0.96, cuRAND 10.4.0.35 and CCCL 13.0.85.
+  The original minimal toolchain is retained. These component pins match the existing NVIDIA
   CUDA Toolkit 13.0.2 package metadata. The original virtualenv is untouched.
   Preparation alone does not prove the repaired GPU path works.
 - Redirected vLLM, Triton, TorchInductor, CUDA and FlashInfer caches to

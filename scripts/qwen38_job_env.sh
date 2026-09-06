@@ -10,8 +10,8 @@ export CUDA_CACHE_PATH="$TMPDIR/cuda"
 export XDG_CACHE_HOME="$TMPDIR/xdg-cache"
 export FLASHINFER_WORKSPACE_BASE="$TMPDIR/flashinfer"
 export CUDA_HOME
-CUDA_HOME="$ROOT/cuda-toolchain-13.0/nvidia/cu13"
-[[ -f "$ROOT/cuda-toolchain-13.0/TOOLCHAIN_MANIFEST.json" ]] || {
+CUDA_HOME="$ROOT/cuda-toolchain-13.0-r2/nvidia/cu13"
+[[ -f "$ROOT/cuda-toolchain-13.0-r2/TOOLCHAIN_MANIFEST.json" ]] || {
   echo "Run prepare_qwen38_cuda_toolchain.sh before GPU evaluation" >&2
   return 1
 }

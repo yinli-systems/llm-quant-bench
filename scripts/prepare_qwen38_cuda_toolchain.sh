@@ -3,15 +3,16 @@
 set -euo pipefail
 ROOT=${QWEN38_ROOT:-/ssd/scxi253/qwen38-27b-pareto-v2}
 PY="$ROOT/venv/bin/python"
-TARGET="$ROOT/cuda-toolchain-13.0"
+TARGET="$ROOT/cuda-toolchain-13.0-r2"
 [[ ! -e "$TARGET" ]] || { echo "Refusing to overwrite existing toolchain: $TARGET" >&2; exit 1; }
 export PIP_CACHE_DIR="$ROOT/pip-cache"
 export TMPDIR="$ROOT/tmp-cuda-toolchain"
 mkdir -p "$TMPDIR"
 "$PY" -m pip install --ignore-installed --no-deps --target "$TARGET" \
-  --report "$ROOT/logs/cuda-toolchain-install-report.json" \
+  --report "$ROOT/logs/cuda-toolchain-r2-install-report.json" \
   nvidia-cuda-nvcc==13.0.88 nvidia-cuda-crt==13.0.88 \
-  nvidia-nvvm==13.0.88 nvidia-cuda-runtime==13.0.96
+  nvidia-nvvm==13.0.88 nvidia-cuda-runtime==13.0.96 \
+  nvidia-curand==10.4.0.35 nvidia-cuda-cccl==13.0.85
 "$PY" - "$TARGET" <<'PY'
 import hashlib
 import importlib.metadata
@@ -26,6 +27,8 @@ nvcc = subprocess.check_output([str(cuda / "bin/nvcc"), "--version"], text=True)
 assert "release 13.0," in nvcc, nvcc
 header = cuda / "include/cuda_runtime_api.h"
 assert "#define CUDART_VERSION  13000" in header.read_text()
+assert (cuda / "include/curand.h").is_file()
+assert (cuda / "include/curand_kernel.h").is_file()
 files = {}
 for path in sorted(target.rglob("*")):
     if path.is_file():

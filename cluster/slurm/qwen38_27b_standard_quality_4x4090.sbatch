@@ -61,7 +61,7 @@ export VLLM_NO_USAGE_STATS=1
 export TMPDIR="/tmp/qwen38-$SLURM_JOB_ID"
 source "$SRC/scripts/qwen38_job_env.sh"
 "$CUDA_HOME/bin/nvcc" --version > "$RUN/nvcc-version.txt"
-cp "$ROOT/cuda-toolchain-13.0/TOOLCHAIN_MANIFEST.json" "$RUN/cuda_toolchain_manifest.json"
+cp "$ROOT/cuda-toolchain-13.0-r2/TOOLCHAIN_MANIFEST.json" "$RUN/cuda_toolchain_manifest.json"
 cp "$ROOT/RUNTIME_MANIFEST.json" "$RUN/runtime_manifest.json"
 cp "$ROOT/RUNTIME_FREEZE.txt" "$RUN/runtime_freeze.txt"
 
