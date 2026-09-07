@@ -1,0 +1,569 @@
+{
+  "anomalies": [
+    {
+      "batch_elapsed_seconds": 18.708617869007867,
+      "finish_reason": "stop",
+      "output_tokens": 988,
+      "prompt_tokens": 1922,
+      "request_id": "152",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 275.0126807880006,
+      "finish_reason": "stop",
+      "output_tokens": 14778,
+      "prompt_tokens": 1805,
+      "request_id": "229",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 66.80778189300327,
+      "finish_reason": "stop",
+      "output_tokens": 3591,
+      "prompt_tokens": 1675,
+      "request_id": "362",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 613.0643075869884,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 1637,
+      "request_id": "413",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 613.734303196019,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 1611,
+      "request_id": "450",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 8.704670473991428,
+      "finish_reason": "stop",
+      "output_tokens": 453,
+      "prompt_tokens": 1603,
+      "request_id": "460",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 13.799873261014,
+      "finish_reason": "stop",
+      "output_tokens": 728,
+      "prompt_tokens": 1594,
+      "request_id": "469",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 11.898876041988842,
+      "finish_reason": "stop",
+      "output_tokens": 626,
+      "prompt_tokens": 1568,
+      "request_id": "488",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 7.694529047992546,
+      "finish_reason": "stop",
+      "output_tokens": 400,
+      "prompt_tokens": 1532,
+      "request_id": "518",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 613.5271112770424,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 1469,
+      "request_id": "570",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 613.5789871180314,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 1446,
+      "request_id": "591",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 613.3945590379881,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 1410,
+      "request_id": "652",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 320.6691093519912,
+      "finish_reason": "stop",
+      "output_tokens": 17259,
+      "prompt_tokens": 1405,
+      "request_id": "665",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 613.3021965739899,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 1340,
+      "request_id": "802",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 124.19415758299874,
+      "finish_reason": "stop",
+      "output_tokens": 6695,
+      "prompt_tokens": 1255,
+      "request_id": "921",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 287.60586752096424,
+      "finish_reason": "stop",
+      "output_tokens": 15466,
+      "prompt_tokens": 1195,
+      "request_id": "1024",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 229.88028807501541,
+      "finish_reason": "stop",
+      "output_tokens": 12371,
+      "prompt_tokens": 1190,
+      "request_id": "1037",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 237.43451522197574,
+      "finish_reason": "stop",
+      "output_tokens": 12774,
+      "prompt_tokens": 1163,
+      "request_id": "1074",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 28.72700559301302,
+      "finish_reason": "stop",
+      "output_tokens": 1544,
+      "prompt_tokens": 1129,
+      "request_id": "1131",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 111.96372868400067,
+      "finish_reason": "stop",
+      "output_tokens": 6042,
+      "prompt_tokens": 1116,
+      "request_id": "1147",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 159.5052936549764,
+      "finish_reason": "stop",
+      "output_tokens": 8605,
+      "prompt_tokens": 1095,
+      "request_id": "1163",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 32.41969994496321,
+      "finish_reason": "stop",
+      "output_tokens": 1744,
+      "prompt_tokens": 1036,
+      "request_id": "1203",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 35.751289229956456,
+      "finish_reason": "stop",
+      "output_tokens": 1926,
+      "prompt_tokens": 1030,
+      "request_id": "1207",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 612.6812897710479,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 365,
+      "request_id": "1213",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 612.4896083730273,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 285,
+      "request_id": "1215",
+      "stop_reason": null,
+      "thinking_closed": false
+    },
+    {
+      "batch_elapsed_seconds": 612.5454592430033,
+      "finish_reason": "length",
+      "output_tokens": 32768,
+      "prompt_tokens": 244,
+      "request_id": "1217",
+      "stop_reason": null,
+      "thinking_closed": false
+    }
+  ],
+  "artifact_sha256": {
+    "cuda_toolchain_manifest.json": "9c65006a0207ca68355d2f28cb839b4713a3e6313e6715e1a538d2b57a6e018f",
+    "dataset_receipt.READY": "745bbea50fcfe7b7d6f5f579b57802c3cf0b8a5eab91c8dea8033ef2cf51fcc4",
+    "dataset_receipt.json": "1702023a41207b795f4e082fe6ff3453427860d3c39b73b2d2e3d7629507a625",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/results_2026-09-07T09-10-51.912146.json": "9f44411fee8648dc1c604ebe32c6dbd08c90e68a2aa0386d533dc45f8668d6bb",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_gpqa_diamond_cot_zeroshot_pinned_2026-09-07T09-10-51.912146.jsonl": "e8ff26d620d15fc0758ddc1fcb9d0a88f7218fba388e5cc221045cf56d8c6490",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_biology_pinned_2026-09-07T09-10-51.912146.jsonl": "b4b01c759af4bc1f961f97576450cdc07d163f05c8858eb3adc6785ebdf4e5b4",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_business_pinned_2026-09-07T09-10-51.912146.jsonl": "7cf8e7721f01338d2e3fb2bd3a679a906c171b7f5a1de605afcafbf3ba2dda00",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_chemistry_pinned_2026-09-07T09-10-51.912146.jsonl": "4d21aec3f5272f61da907517e2ab68799a6abb64de34122195962e8966127a85",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_computer_science_pinned_2026-09-07T09-10-51.912146.jsonl": "9a84142588c13d1dfdb9b225d470507db4285ac61c28b9ede73e54704636e39e",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_economics_pinned_2026-09-07T09-10-51.912146.jsonl": "7dfe92cb75c436e26e40d6cff379813096a6a2ce649d4453ee9bb2c44892e3dc",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_engineering_pinned_2026-09-07T09-10-51.912146.jsonl": "96f1de1dcd3923852701e741e03e73d5e0bad0ea09220603fd0670bf217a4efe",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_health_pinned_2026-09-07T09-10-51.912146.jsonl": "3aeb459941f6e302a78bbbc5df14c004a2a5667c8d4141fc957efc5829f1eef1",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_history_pinned_2026-09-07T09-10-51.912146.jsonl": "fe4a92954bdfbd32dffb69ac48686564a17392eedf98a2831c43e146e26b98ba",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_law_pinned_2026-09-07T09-10-51.912146.jsonl": "22e97ada2efc60cb5c74edb1e35c90f43833acdd9075e6af86355dfe39392340",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_math_pinned_2026-09-07T09-10-51.912146.jsonl": "6e8a62596c92d6a4ce26211624fb9ee3d2f6c15d085342f235306ff5b15cdabc",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_other_pinned_2026-09-07T09-10-51.912146.jsonl": "714c955cf33e74c149d825dc7038a6c0c01c5e80e3e8ce020cb87eeffbdc0e28",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_philosophy_pinned_2026-09-07T09-10-51.912146.jsonl": "1afd0ff9a2dc6fe7f1efd9064beeba25ea1bdce6bd55999eba68fbea38f053af",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_physics_pinned_2026-09-07T09-10-51.912146.jsonl": "cd3cfb4e40b4426a34e42c4fb814ac4fb70aa6d22bb8bc4db095e3e36b49efca",
+    "eval/__ssd__scxi253__qwen38-27b-pareto-v2__models__qwen38-27b-bf16/samples_qwen38_mmlu_pro_psychology_pinned_2026-09-07T09-10-51.912146.jsonl": "05367e3fa19b51113b7e4783c2d9efbae27e9d8f7862123411c2185cb7c7d64a",
+    "eval/completion_check.json": "c69b3d58529a539ab39d604ee6c4fbf0481affc903a2e6c06729945c84677d1b",
+    "eval/generation_telemetry.jsonl": "0ef18b3f93742042b937f2e0e6f4f80a6dc2c0095dfc7d4a9b8c7e4eb777e6ff",
+    "eval/lm_eval.log": "c828c2748174a929a3b128f72ebc4b5b65a2a479ac1afa4923f6913af0829246",
+    "eval/run_receipt.json": "8535a686a7b7d9ca6bf9e8593dc92f1e3c8fbebc971644c00c03e64cf43de243",
+    "eval/task_integrity.json": "e6a7c85edd2eaf031039c327a866e9cade3ada2d1e6b6c5df17ce867bcee016d",
+    "eval/task_overrides/gpqa_diamond_pinned.yaml": "c20743b3116377a82f66ed6e82936d58c1e3d5c7a5b5d473b4d83655182b5744",
+    "eval/task_overrides/mmlu_pro_biology_pinned.yaml": "f423bc7f149f34c3f661da4b8d5e94544fc622a5226d413f6bb4569a708fb6b5",
+    "eval/task_overrides/mmlu_pro_business_pinned.yaml": "75932c4f7f6500786e5e063ff8ea0c91f1e1ea7ce74eedbe2b885ed52d2e8b8d",
+    "eval/task_overrides/mmlu_pro_chemistry_pinned.yaml": "ecb55a20077c9986e25d9853926b4bdf1d3e11f0845ce7b91b16bd7c14d9f215",
+    "eval/task_overrides/mmlu_pro_computer_science_pinned.yaml": "ba8a1e7eafe43d70d1c8d713e10724ac2ba4c4eee18bf4440c247e4b9a9b8732",
+    "eval/task_overrides/mmlu_pro_economics_pinned.yaml": "c70d273a80a73bbce52e9eb4366c5d756ca70de8ef4039c9682adde0de0dd47c",
+    "eval/task_overrides/mmlu_pro_engineering_pinned.yaml": "dae8c304353a45e4292e91e76d908f699e4fcb614783ca20f54e531a577b84e7",
+    "eval/task_overrides/mmlu_pro_group_pinned.yaml": "aad85594ce598a9a5bcb38c2bf00c8d252b1c3a48394f95f83c7cfbb0e972669",
+    "eval/task_overrides/mmlu_pro_health_pinned.yaml": "e337c32c4e488ebe37f943f21648dfd469ed2da13b5110ec6c28a217de46251c",
+    "eval/task_overrides/mmlu_pro_history_pinned.yaml": "d40719772be13627c35650b863274c40e9e1b9ee7da5a67074da123844052427",
+    "eval/task_overrides/mmlu_pro_law_pinned.yaml": "f64d8a1176ae3e0df6e9c205805e23f317520b082f39716726d9fcc3b4b6def5",
+    "eval/task_overrides/mmlu_pro_math_pinned.yaml": "37c7987fd77bbadb168302273c000b3a591c558e48e4f02bde72d45979aab175",
+    "eval/task_overrides/mmlu_pro_other_pinned.yaml": "ac152250ab8381f64b865f8dd4cebd068c0d91368666eece7b49377142d13782",
+    "eval/task_overrides/mmlu_pro_philosophy_pinned.yaml": "f9e053e41303afb69124543ed07f3777ac1fac5aa63958b5b0d44caf968220f7",
+    "eval/task_overrides/mmlu_pro_physics_pinned.yaml": "9856fb72f605d08373f6b45e37f7869d53c30400d45c7dc552fb9dbeb399d9cd",
+    "eval/task_overrides/mmlu_pro_psychology_pinned.yaml": "2394b3d15e243aa717485abccd44415e2386a87758e5c7e75e2dc0f8fc2e76a2",
+    "gpus-start.csv": "49331b91f79f4b43f1bc313ed1d42ef14d80d84ef41a2888aa7a4ea2aee8c69a",
+    "model_snapshot_manifest.json": "87a3aa1be7372a111ab06bb17e3f79660f236048e48120c109447a240b5f1724",
+    "nvcc-version.txt": "fc7ce0c80d28ed925fd490dc4e3915ce620fcf115f965189688c6f049243aad5",
+    "preflight.json": "e42315d5baaaff42eaf93392214fc585b7b96733b30f5bf08b0497144e0d5a72",
+    "protocol.json": "7a11c55ec0def9194473ccec67019eec561c024b59d47666ad078b9e9c9c06fd",
+    "runtime_freeze.txt": "a424be85f5d4cbee0ba2b686d8b83f5d1d1edc572af3c831f160899e2fedb628",
+    "runtime_manifest.json": "6a3ac7d1f9098e06ae2478a6f244a218f9b52e876e44331767f039e2bd9e7bd4",
+    "source_revision.txt": "e4d6950405c05028f04bf42892c7d179f0d46e9ba2f670dacfd053c58e973811"
+  },
+  "claim_boundary": "Failed pilot diagnostic only; original scores unchanged; no retention, official score, or speedup claim. Hash inventory is post-run, not the original success receipt.",
+  "completion": {
+    "length_limited": 9,
+    "output_tokens": 2397502,
+    "requests": 1229,
+    "unclosed_thinking": 26
+  },
+  "families": {
+    "gpqa": {
+      "correct": 12,
+      "count": 20,
+      "empty_saved_response": 0,
+      "invalid": 4,
+      "invalid_rate": 0.2,
+      "invalid_with_boxed_text": 4,
+      "score": 0.6
+    },
+    "mmlu_pro": {
+      "correct": 1008,
+      "count": 1209,
+      "empty_saved_response": 0,
+      "invalid": 16,
+      "invalid_rate": 0.013234077750206782,
+      "invalid_with_boxed_text": 0,
+      "score": 0.8337468982630273
+    }
+  },
+  "fatal_signatures": {
+    "CUDA out of memory": 0,
+    "Engine core initialization failed": 0,
+    "Ninja build failed": 0,
+    "Traceback (most recent call last)": 0
+  },
+  "generation_seconds": 44889.35259615909,
+  "gpu_final_available": false,
+  "gpu_start_rows": [
+    "0, NVIDIA GeForce RTX 4090, GPU-b66d1a73-ea87-a57a-dafc-21b040049750, 8.9, 24564 MiB, 580.82.07",
+    "1, NVIDIA GeForce RTX 4090, GPU-6b42b1a2-9834-c92e-1b3d-f11b8f2a20f6, 8.9, 24564 MiB, 580.82.07",
+    "2, NVIDIA GeForce RTX 4090, GPU-16dd73d8-3f8c-d317-f652-27573d88b062, 8.9, 24564 MiB, 580.82.07",
+    "3, NVIDIA GeForce RTX 4090, GPU-14bd623c-884d-2e4b-26c4-f9e31de9b2ad, 8.9, 24564 MiB, 580.82.07"
+  ],
+  "job_id": 1561180,
+  "length_and_missing_marker_overlap": 9,
+  "original_sha256sums_available": false,
+  "paired_sample_hash_status": "NOT_ASSESSABLE_CANDIDATE_ABSENT",
+  "receipt": {
+    "arm": "baseline",
+    "command": [
+      "/ssd/scxi253/qwen38-27b-pareto-v2/venv/bin/python",
+      "/ssd/scxi253/qwen38-27b-pareto-v2/source/llm-quant-bench/scripts/qwen38_lmeval_entrypoint.py",
+      "run",
+      "--model",
+      "vllm",
+      "--model_args",
+      "{\"pretrained\":\"/ssd/scxi253/qwen38-27b-pareto-v2/models/qwen38-27b-bf16\",\"dtype\":\"bfloat16\",\"tensor_parallel_size\":4,\"max_model_len\":65536,\"gpu_memory_utilization\":0.9,\"enable_thinking\":true,\"think_end_token\":\"</think>\",\"chat_template_args\":{\"reasoning_effort\":\"xhigh\",\"preserve_thinking\":true}}",
+      "--tasks",
+      "qwen38_gpqa_diamond_cot_zeroshot_pinned,qwen38_mmlu_pro_pinned",
+      "--batch_size",
+      "1",
+      "--seed",
+      "0,1234,1234,1234",
+      "--apply_chat_template",
+      "--show_config",
+      "--log_samples",
+      "--output_path",
+      "/ssd/scxi253/qwen38-27b-pareto-v2/runs/standard-quality/baseline/pilot/job-1561180/eval",
+      "--include_path",
+      "/ssd/scxi253/qwen38-27b-pareto-v2/runs/standard-quality/baseline/pilot/job-1561180/eval/task_overrides",
+      "--gen_kwargs",
+      "{\"max_gen_toks\": 32768}",
+      "--limit",
+      "0.1"
+    ],
+    "dataset_revisions": {
+      "gpqa_diamond_cot_zeroshot": "633f5ee89ab8ad4522a9f850766b73f62147ffdd",
+      "mmlu_pro": "b189ec765aa7ed75c8acfea42df31fdae71f97be"
+    },
+    "dry_run": false,
+    "evaluation_source_dirty": false,
+    "evaluation_source_revision": "2c0f118a203fc99f53c62bdc8451f4792b8758ba",
+    "execution_tasks": [
+      "qwen38_gpqa_diamond_cot_zeroshot_pinned",
+      "qwen38_mmlu_pro_pinned"
+    ],
+    "limit": 0.1,
+    "lm_eval_commit": "b954108c9baaaa934b4ad842033b31a97ee30816",
+    "model_id": "Qwen/Qwen3.8-27B",
+    "model_path": "/ssd/scxi253/qwen38-27b-pareto-v2/models/qwen38-27b-bf16",
+    "model_revision": "1d4bf0f2ff6012fd82039f2fa52739d0dd7c60c0",
+    "protocol_sha256": "7a11c55ec0def9194473ccec67019eec561c024b59d47666ad078b9e9c9c06fd",
+    "protocol_version": "qwen38-27b-bf16-fp8-pareto-paracloud-v4",
+    "tasks": [
+      "gpqa_diamond_cot_zeroshot",
+      "mmlu_pro"
+    ]
+  },
+  "run_dir": "/ssd/scxi253/qwen38-27b-pareto-v2/runs/standard-quality/baseline/pilot/job-1561180",
+  "sample_provenance_digest": "01624fe2e030fadf535b175bc4cf35974bf2ae7328da0aee9db28c650811a2f1",
+  "status": "FAILED_BASELINE_COMPLETENESS_CANDIDATE_NOT_RUN",
+  "tasks": {
+    "qwen38_gpqa_diamond_cot_zeroshot_pinned": {
+      "all_filter_rows": 40,
+      "correct": 12,
+      "count": 20,
+      "empty_saved_response": 0,
+      "invalid": 4,
+      "invalid_rate": 0.2,
+      "invalid_with_boxed_text": 4,
+      "primary_filter": "flexible-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.6
+    },
+    "qwen38_mmlu_pro_biology_pinned": {
+      "all_filter_rows": 72,
+      "correct": 66,
+      "count": 72,
+      "empty_saved_response": 0,
+      "invalid": 2,
+      "invalid_rate": 0.027777777777777776,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.9166666666666666
+    },
+    "qwen38_mmlu_pro_business_pinned": {
+      "all_filter_rows": 79,
+      "correct": 67,
+      "count": 79,
+      "empty_saved_response": 0,
+      "invalid": 2,
+      "invalid_rate": 0.02531645569620253,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.8481012658227848
+    },
+    "qwen38_mmlu_pro_chemistry_pinned": {
+      "all_filter_rows": 114,
+      "correct": 105,
+      "count": 114,
+      "empty_saved_response": 0,
+      "invalid": 0,
+      "invalid_rate": 0,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.9210526315789473
+    },
+    "qwen38_mmlu_pro_computer_science_pinned": {
+      "all_filter_rows": 41,
+      "correct": 36,
+      "count": 41,
+      "empty_saved_response": 0,
+      "invalid": 0,
+      "invalid_rate": 0,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.8780487804878049
+    },
+    "qwen38_mmlu_pro_economics_pinned": {
+      "all_filter_rows": 85,
+      "correct": 77,
+      "count": 85,
+      "empty_saved_response": 0,
+      "invalid": 1,
+      "invalid_rate": 0.011764705882352941,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.9058823529411765
+    },
+    "qwen38_mmlu_pro_engineering_pinned": {
+      "all_filter_rows": 97,
+      "correct": 80,
+      "count": 97,
+      "empty_saved_response": 0,
+      "invalid": 1,
+      "invalid_rate": 0.010309278350515464,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.8247422680412371
+    },
+    "qwen38_mmlu_pro_health_pinned": {
+      "all_filter_rows": 82,
+      "correct": 59,
+      "count": 82,
+      "empty_saved_response": 0,
+      "invalid": 3,
+      "invalid_rate": 0.036585365853658534,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.7195121951219512
+    },
+    "qwen38_mmlu_pro_history_pinned": {
+      "all_filter_rows": 39,
+      "correct": 25,
+      "count": 39,
+      "empty_saved_response": 0,
+      "invalid": 0,
+      "invalid_rate": 0,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.6410256410256411
+    },
+    "qwen38_mmlu_pro_law_pinned": {
+      "all_filter_rows": 111,
+      "correct": 79,
+      "count": 111,
+      "empty_saved_response": 0,
+      "invalid": 1,
+      "invalid_rate": 0.009009009009009009,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.7117117117117117
+    },
+    "qwen38_mmlu_pro_math_pinned": {
+      "all_filter_rows": 136,
+      "correct": 127,
+      "count": 136,
+      "empty_saved_response": 0,
+      "invalid": 0,
+      "invalid_rate": 0,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.9338235294117647
+    },
+    "qwen38_mmlu_pro_other_pinned": {
+      "all_filter_rows": 93,
+      "correct": 62,
+      "count": 93,
+      "empty_saved_response": 0,
+      "invalid": 4,
+      "invalid_rate": 0.043010752688172046,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.6666666666666666
+    },
+    "qwen38_mmlu_pro_philosophy_pinned": {
+      "all_filter_rows": 50,
+      "correct": 40,
+      "count": 50,
+      "empty_saved_response": 0,
+      "invalid": 2,
+      "invalid_rate": 0.04,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.8
+    },
+    "qwen38_mmlu_pro_physics_pinned": {
+      "all_filter_rows": 130,
+      "correct": 118,
+      "count": 130,
+      "empty_saved_response": 0,
+      "invalid": 0,
+      "invalid_rate": 0,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.9076923076923077
+    },
+    "qwen38_mmlu_pro_psychology_pinned": {
+      "all_filter_rows": 80,
+      "correct": 67,
+      "count": 80,
+      "empty_saved_response": 0,
+      "invalid": 0,
+      "invalid_rate": 0,
+      "invalid_with_boxed_text": 0,
+      "primary_filter": "custom-extract",
+      "saved_response_with_think_end": 0,
+      "score": 0.8375
+    }
+  }
+}
